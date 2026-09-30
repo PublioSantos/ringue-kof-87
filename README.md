@@ -9,20 +9,35 @@ Todo o jogo é Kof: lógica, IA, física do ringue, placar e até a fonte
 em pixels (3x5), desenhada pelo próprio programa num `Canvas` do `kof.ui`.
 Sprites, nomes e arte são originais, inspirados no espírito do cartucho.
 
-## Como rodar
+## Como rodar (só Kof, sem python)
 
-O jeito mais simples: baixe **`ringue-kof-87.html`** e abra no navegador.
-É o jogo inteiro num arquivo só, funciona offline.
+O jeito mais simples: abra **`ringue-kof-87.html`** no navegador.
+É o jogo inteiro num arquivo só, funciona offline, sem servidor.
 
 Com o Kof instalado:
 
 ```bash
-kof run ringue.kf --target js      # abre no webview do Kof
-./empacotar.sh                     # gera web/ e ringue-kof-87.html
-cd web && python3 -m http.server   # versão web em http://localhost:8000
+kof run ringue.kf --target js         # roda no webview do próprio Kof
+kof run ferramentas/empacotar.kf      # recompila e gera web/ + ringue-kof-87.html
 ```
 
+O empacotador também é escrito em Kof (`ferramentas/empacotar.kf`): ele chama
+o `kof build`, ajusta a página e junta o runtime e o jogo num único
+`<script type="module">`, usando só `kof.io` e `kof.process`.
+Não precisa de python, node nem esbuild.
+
 Compilado com o Kof4j `main` (commit `317d9f6`).
+
+## Quantas linhas de Kof
+
+| Arquivo | Linhas | Código (sem brancas e comentários) |
+|---|---:|---:|
+| `ringue.kf` (o jogo) | 1.474 | 1.282 |
+| `ferramentas/empacotar.kf` (empacotador) | 97 | 78 |
+| **Total** | **1.571** | **1.360** |
+
+Tudo o que o jogo faz está nessas linhas: regras, IA, desenho, fonte em
+pixels, síntese de som e codificação dos WAVs em base64.
 
 ## Como jogar
 
@@ -58,9 +73,9 @@ Jab, corpo, gancho, payoff, bloqueio, soco no vento, gongo, contagem do juiz,
 queda, torcida, levantada, sem fôlego e o blip do menu.
 Liga/desliga: botão **Som** ou tecla **N**.
 
-## Bugs do compilador encontrados (KofJS)
+## Bugs do compilador encontrados
 
-Durante o desenvolvimento apareceram dois bugs no backend JS; os repros estão em `bugs-kofjs/`:
+Durante o desenvolvimento apareceram três bugs no compilador Kof; os repros estão em `bugs-kof/`:
 
 1. **`bug-setstyle.kf`**: `widget.setStyle(Style("..."))` é descartado no JS gerado
    (vira a expressão morta `(b, ...)`), e uma declaração seguinte é reordenada
@@ -68,8 +83,11 @@ Durante o desenvolvimento apareceram dois bugs no backend JS; os repros estão e
    before initialization`. O `kof check` passa sem erros.
 2. **`bug-canvas-on.kf`**: `canvas.on("pointerdown", ...)` é descartado sem
    aviso (em `Button` o mesmo `.on` funciona).
+3. **`bug-jvm-event-key.kf`**: no alvo JVM (e no `kof serve`), passar `e.key()`
+   de um handler de evento para uma função que recebe `String` gera
+   `java.lang.VerifyError` ao iniciar. No alvo JS funciona.
 
-O jogo contorna os dois (não usa `setStyle` nem eventos no canvas).
+O jogo contorna os dois primeiros (não usa `setStyle` nem eventos no canvas) e roda no alvo JS.
 
 ## Créditos
 

@@ -1,0 +1,97 @@
+// ============================================================================
+//  EMPACOTADOR do Ringue KOF 87 — 100% Kof (sem python, sem node)
+//
+//  1. compila ringue.kf para JS (kof build ... --target js --output web)
+//  2. ajusta o titulo da pagina
+//  3. junta runtime + jogo num unico <script type="module"> embutido
+//     -> ringue-kof-87.html abre offline, direto do disco (file://)
+//
+//  Uso (na pasta do projeto):   kof run ferramentas/empacotar.kf
+// ============================================================================
+
+import kof.io
+import kof.process
+
+// troca todas as ocorrencias de 'de' por 'para'
+String trocar(String s, String de, String para) {
+    var out = ""
+    var resto = s
+    var i = resto.indexOf(de)
+    while (i >= 0) {
+        out = out + resto.substring(0, i) + para
+        resto = resto.substring(i + de.length(), resto.length())
+        i = resto.indexOf(de)
+    }
+    return out + resto
+}
+
+// remove linhas 'import ...', o prefixo 'export ' e as linhas de sourcemap
+String semModulos(String src) {
+    var out = ""
+    var resto = src
+    while (resto.length() > 0) {
+        var fim = resto.indexOf("\n")
+        var linha = resto
+        if (fim >= 0) {
+            linha = resto.substring(0, fim)
+            resto = resto.substring(fim + 1, resto.length())
+        } else {
+            resto = ""
+        }
+        if (linha.startsWith("import ") || linha.startsWith("//# sourceMappingURL")) {
+            out = out + "\n"
+        } else if (linha.startsWith("export ")) {
+            out = out + linha.substring(7, linha.length()) + "\n"
+        } else {
+            out = out + linha + "\n"
+        }
+    }
+    return out
+}
+
+String ler(String caminho) {
+    if (!File(caminho).exists()) {
+        println("ERRO: nao achei " + caminho)
+        process.exit(1)
+    }
+    String? t = File(caminho).readText()
+    if (t == null) {
+        println("ERRO: nao consegui ler " + caminho)
+        process.exit(1)
+    }
+    return "" + t
+}
+
+main() {
+    if (!File("ringue.kf").exists()) {
+        println("Rode na pasta do projeto:  kof run ferramentas/empacotar.kf")
+        process.exit(1)
+    }
+    println("1/3 compilando ringue.kf para JS...")
+    var r = process.run("kof", "build", "ringue.kf", "--target", "js", "--output", "web")
+    if (r.exitCode != 0) {
+        println(r.stdout)
+        println(r.stderr)
+        println("ERRO: kof build falhou (codigo " + r.exitCode + ")")
+        process.exit(1)
+    }
+
+    println("2/3 ajustando a pagina...")
+    var html = ler("web/index.html")
+    html = trocar(html, "<title>Default — Kof</title>", "<title>Ringue KOF 87</title>")
+    html = trocar(html, "<span class=\"name\">Default</span>", "<span class=\"name\">Ringue KOF 87</span>")
+    html = trocar(html, "<span class=\"kind\">Kof output</span>", "<span class=\"kind\">Powered by Kof · github.com/KofLang</span>")
+    File("web/index.html").writeText(html)
+
+    println("3/3 gerando ringue-kof-87.html (arquivo unico)...")
+    var js = semModulos(ler("web/kof-runtime.mjs")) + semModulos(ler("web/Default.mjs"))
+    js = trocar(js, "</script", "<\\/script")
+    var tag = "<script type=\"module\" src=\"Default.mjs\"></script>"
+    if (html.indexOf(tag) < 0) {
+        println("ERRO: formato inesperado de web/index.html")
+        process.exit(1)
+    }
+    var unico = trocar(html, tag, "<script type=\"module\">\n" + js + "</script>")
+    File("ringue-kof-87.html").writeText(unico)
+    println("pronto: web/ e ringue-kof-87.html")
+}

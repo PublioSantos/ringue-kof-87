@@ -86,594 +86,735 @@
   </div>
   <div id="kof-root"></div>
   <div id="kof-status">terminated</div>
-  <script>
-(() => {
-  // web/kof-runtime.mjs
-  globalThis.kof_platform || (globalThis.kof_platform = new Proxy({
-    print(x) {
-      console.log(String(x));
-    }
-  }, {
-    get(t, prop) {
-      return prop in t ? t[prop] : function() {
-        throw new Error("kof_platform." + String(prop) + ": not available outside the Kof JS host");
-      };
-    }
-  }));
-  if (typeof document > "u") {
-    let kofMakeEl = function(tag) {
-      let attrs = {}, el = {
-        tagName: String(tag).toUpperCase(),
-        id: null,
-        className: "",
-        textContent: "",
-        value: "",
-        checked: !1,
-        readOnly: !1,
-        disabled: !1,
-        selectedIndex: -1,
-        href: "",
-        target: "",
-        rel: "",
-        src: "",
-        alt: "",
-        width: 0,
-        height: 0,
-        type: "",
-        placeholder: "",
-        children: [],
-        parentNode: null,
-        style: {},
-        dataset: {},
-        _attrs: attrs,
-        classList: {
-          _set: /* @__PURE__ */ new Set(),
-          add(cls) {
-            this._set.add(cls);
-          },
-          remove(cls) {
-            this._set.delete(cls);
-          },
-          toggle(cls) {
-            return this._set.has(cls) ? (this._set.delete(cls), !1) : (this._set.add(cls), !0);
-          },
-          contains(cls) {
-            return this._set.has(cls);
-          }
-        },
-        setAttribute(name, value) {
-          attrs[String(name)] = String(value), name === "id" ? el.id = String(value) : name === "class" ? el.className = String(value) : name === "width" ? el.width = parseInt(value, 10) || 0 : name === "height" && (el.height = parseInt(value, 10) || 0);
-        },
-        getAttribute(name) {
-          return name === "id" ? el.id : name === "class" ? el.className : name === "width" ? el.width : name === "height" ? el.height : Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
-        },
-        hasAttribute(name) {
-          return el.getAttribute(name) !== null;
-        },
-        removeAttribute(name) {
-          delete attrs[name];
-        },
-        querySelector(sel) {
-          let want = String(sel).toUpperCase(), stack = el.children.slice();
-          for (; stack.length > 0; ) {
-            let n = stack.shift();
-            if (n.tagName === want) return n;
-            n.children && stack.push.apply(stack, n.children);
-          }
-          return null;
-        },
-        querySelectorAll(sel) {
-          let want = String(sel).toUpperCase(), found = [], stack = el.children.slice();
-          for (; stack.length > 0; ) {
-            let n = stack.shift();
-            n.tagName === want && found.push(n), n.children && stack.push.apply(stack, n.children);
-          }
-          return found;
-        },
-        appendChild(child) {
-          return child && child.parentNode && child.parentNode.removeChild(child), child.parentNode = el, el.children.push(child), child;
-        },
-        insertBefore(child, ref) {
-          child && child.parentNode && child.parentNode.removeChild(child), child.parentNode = el;
-          let i = el.children.indexOf(ref);
-          return i < 0 ? el.children.push(child) : el.children.splice(i, 0, child), child;
-        },
-        removeChild(child) {
-          let i = el.children.indexOf(child);
-          return i >= 0 && (el.children.splice(i, 1), child.parentNode = null), child;
-        },
-        remove() {
-          el.parentNode && el.parentNode.removeChild(el);
-        },
-        focus() {
-        },
-        blur() {
-        },
-        click() {
-          let hs = el._handlers && el._handlers.click || [];
-          for (let fn of hs) fn({ target: el, preventDefault() {
-          }, stopPropagation() {
-          } });
-        },
-        getContext(type) {
-          return type !== "2d" ? null : {
-            fillStyle: "#000",
-            strokeStyle: "#000",
-            lineWidth: 1,
-            globalAlpha: 1,
-            font: "10px sans-serif",
-            textAlign: "left",
-            textBaseline: "alphabetic",
-            beginPath() {
-            },
-            closePath() {
-            },
-            moveTo() {
-            },
-            lineTo() {
-            },
-            arc() {
-            },
-            fill() {
-            },
-            stroke() {
-            },
-            clearRect() {
-            },
-            fillRect() {
-            },
-            strokeRect() {
-            },
-            rect() {
-            },
-            save() {
-            },
-            restore() {
-            },
-            translate() {
-            },
-            rotate() {
-            },
-            scale() {
-            },
-            transform() {
-            },
-            setTransform() {
-            },
-            fillText() {
-            },
-            strokeText() {
-            },
-            measureText(text2) {
-              return { width: String(text2).length * 6 };
-            },
-            drawImage() {
-            },
-            createLinearGradient() {
-              return { addColorStop() {
-              } };
-            }
-          };
-        },
-        addEventListener(type, fn) {
-          el._handlers = el._handlers || {}, (el._handlers[type] = el._handlers[type] || []).push(fn);
-        },
-        removeEventListener(type, fn) {
-          let hs = el._handlers && el._handlers[type];
-          if (!hs) return;
-          let i = hs.indexOf(fn);
-          i >= 0 && hs.splice(i, 1);
+  <script type="module">
+// Generated by the Kof compiler — KofJS runtime. Do not edit.
+// Reachability-based content: only what the program reaches.
+// kof:seeds kofListAdd,kofListGet,kofListNew,kofPrintln,kofTimeInterval,kofUiAudioNew,kofUiAudioPlay,kofUiAudioSetSrc,kofUiButtonNewAction,kofUiCanvasBeginPath,kofUiCanvasClosePath,kofUiCanvasFill,kofUiCanvasLineTo,kofUiCanvasMoveTo,kofUiCanvasNew,kofUiCanvasSetFill,kofUiColumnNew,kofUiLabelNew,kofUiLinkNew,kofUiRowNew,kofUiWidgetOn,kofUiWindowBind,kofUiWindowNew,kofUiWindowSetTitle,kofUiWindowShow
+// kof:units 64/701
+
+// KofJS core runtime — platform-neutral helpers.
+// Generated by the Kof compiler (KofJS backend).
+// This module is not a VM: it only provides operations that
+// JavaScript does not represent directly.
+
+// #104: kof_platform só existe no host GraalJS; shim fora dele
+// (Node/browser) troca ReferenceError por erro claro (#104).
+if (!globalThis.kof_platform) {
+    globalThis.kof_platform = new Proxy({
+        print(x) { console.log(String(x)); }
+    }, {
+        get(t, prop) {
+            if (prop in t) return t[prop];
+            return function () {
+                throw new Error("kof_platform." + String(prop)
+                        + ": not available outside the Kof JS host");
+            };
         }
-      };
-      return Object.defineProperty(el, "options", {
-        get() {
-          return el.children.filter(function(c) {
-            return c.tagName === "OPTION";
-          });
-        },
-        configurable: !0
-      }), Object.defineProperty(el, "firstChild", {
-        get() {
-          return el.children.length > 0 ? el.children[0] : null;
-        },
-        configurable: !0
-      }), Object.defineProperty(el, "innerHTML", {
-        get() {
-          return "";
-        },
-        set(v) {
-          v === "" && (el.children.length = 0);
-        },
-        configurable: !0
-      }), el;
-    }, kofRoot = kofMakeEl("div");
+    });
+}
+
+if (typeof document === "undefined") {
+    function kofMakeEl(tag) {
+        const attrs = {};
+        const el = {
+            tagName: String(tag).toUpperCase(),
+            id: null,
+            className: "",
+            textContent: "",
+            value: "",
+            checked: false,
+            readOnly: false,
+            disabled: false,
+            selectedIndex: -1,
+            href: "",
+            target: "",
+            rel: "",
+            src: "",
+            alt: "",
+            width: 0,
+            height: 0,
+            type: "",
+            placeholder: "",
+            children: [],
+            parentNode: null,
+            style: {},
+            dataset: {},
+            _attrs: attrs,
+            classList: {
+                _set: new Set(),
+                add(cls) { this._set.add(cls); },
+                remove(cls) { this._set.delete(cls); },
+                toggle(cls) { if (this._set.has(cls)) { this._set.delete(cls); return false; } this._set.add(cls); return true; },
+                contains(cls) { return this._set.has(cls); }
+            },
+            setAttribute(name, value) {
+                attrs[String(name)] = String(value);
+                if (name === "id") el.id = String(value);
+                else if (name === "class") el.className = String(value);
+                else if (name === "width") el.width = parseInt(value, 10) || 0;
+                else if (name === "height") el.height = parseInt(value, 10) || 0;
+            },
+            getAttribute(name) {
+                if (name === "id") return el.id;
+                if (name === "class") return el.className;
+                if (name === "width") return el.width;
+                if (name === "height") return el.height;
+                return Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
+            },
+            hasAttribute(name) { return el.getAttribute(name) !== null; },
+            removeAttribute(name) { delete attrs[name]; },
+            querySelector(sel) {
+                const want = String(sel).toUpperCase();
+                const stack = el.children.slice();
+                while (stack.length > 0) {
+                    const n = stack.shift();
+                    if (n.tagName === want) return n;
+                    if (n.children) stack.push.apply(stack, n.children);
+                }
+                return null;
+            },
+            querySelectorAll(sel) {
+                const want = String(sel).toUpperCase();
+                const found = [];
+                const stack = el.children.slice();
+                while (stack.length > 0) {
+                    const n = stack.shift();
+                    if (n.tagName === want) found.push(n);
+                    if (n.children) stack.push.apply(stack, n.children);
+                }
+                return found;
+            },
+            appendChild(child) {
+                if (child && child.parentNode) child.parentNode.removeChild(child);
+                child.parentNode = el;
+                el.children.push(child);
+                return child;
+            },
+            insertBefore(child, ref) {
+                if (child && child.parentNode) child.parentNode.removeChild(child);
+                child.parentNode = el;
+                const i = el.children.indexOf(ref);
+                if (i < 0) el.children.push(child);
+                else el.children.splice(i, 0, child);
+                return child;
+            },
+            removeChild(child) {
+                const i = el.children.indexOf(child);
+                if (i >= 0) { el.children.splice(i, 1); child.parentNode = null; }
+                return child;
+            },
+            remove() { if (el.parentNode) el.parentNode.removeChild(el); },
+            focus() {},
+            blur() {},
+            click() {
+                const hs = (el._handlers && el._handlers.click) || [];
+                for (const fn of hs) fn({ target: el, preventDefault() {}, stopPropagation() {} });
+            },
+            getContext(type) {
+                if (type !== "2d") return null;
+                return {
+                    fillStyle: "#000", strokeStyle: "#000", lineWidth: 1,
+                    globalAlpha: 1, font: "10px sans-serif",
+                    textAlign: "left", textBaseline: "alphabetic",
+                    beginPath() {}, closePath() {}, moveTo() {}, lineTo() {},
+                    arc() {}, fill() {}, stroke() {}, clearRect() {},
+                    fillRect() {}, strokeRect() {}, rect() {},
+                    save() {}, restore() {}, translate() {}, rotate() {}, scale() {},
+                    transform() {}, setTransform() {},
+                    fillText() {}, strokeText() {},
+                    measureText(text) { return { width: String(text).length * 6 }; },
+                    drawImage() {},
+                    createLinearGradient() { return { addColorStop() {} }; }
+                };
+            },
+            addEventListener(type, fn) { el._handlers = el._handlers || {}; (el._handlers[type] = el._handlers[type] || []).push(fn); },
+            removeEventListener(type, fn) {
+                const hs = el._handlers && el._handlers[type];
+                if (!hs) return;
+                const i = hs.indexOf(fn);
+                if (i >= 0) hs.splice(i, 1);
+            }
+        };
+        Object.defineProperty(el, "options", {
+            get() { return el.children.filter(function (c) { return c.tagName === "OPTION"; }); },
+            configurable: true
+        });
+        Object.defineProperty(el, "firstChild", {
+            get() { return el.children.length > 0 ? el.children[0] : null; },
+            configurable: true
+        });
+        Object.defineProperty(el, "innerHTML", {
+            get() { return ""; },
+            set(v) { if (v === "") { el.children.length = 0; } },
+            configurable: true
+        });
+        return el;
+    }
+    const kofRoot = kofMakeEl("div");
     kofRoot.id = "kof-root";
-    let kofElements = { "kof-root": kofRoot }, kofHead = kofMakeEl("head"), kofHtml = kofMakeEl("html");
-    kofHtml.appendChild(kofHead), globalThis.document = {
-      title: "",
-      head: kofHead,
-      body: kofRoot,
-      documentElement: kofHtml,
-      createElement(tag) {
-        return kofMakeEl(tag);
-      },
-      createElementNS(ns, tag) {
-        return kofMakeEl(tag);
-      },
-      createTextNode(text2) {
-        let t = kofMakeEl("#text");
-        return t.textContent = String(text2), t;
-      },
-      getElementById(id) {
-        return kofElements[id] || null;
-      },
-      querySelector(sel) {
-        return kofRoot.querySelector(sel);
-      },
-      querySelectorAll(sel) {
-        return kofRoot.querySelectorAll(sel);
-      }
-    }, globalThis.window = globalThis, globalThis.__kofRegisterElement = function(id, el) {
-      kofElements[id] = el;
+    const kofElements = { "kof-root": kofRoot };
+    const kofHead = kofMakeEl("head");
+    const kofHtml = kofMakeEl("html");
+    kofHtml.appendChild(kofHead);
+    globalThis.document = {
+        title: "",
+        head: kofHead,
+        body: kofRoot,
+        documentElement: kofHtml,
+        createElement(tag) { return kofMakeEl(tag); },
+        createElementNS(ns, tag) { return kofMakeEl(tag); },
+        createTextNode(text) { const t = kofMakeEl("#text"); t.textContent = String(text); return t; },
+        getElementById(id) { return kofElements[id] || null; },
+        querySelector(sel) { return kofRoot.querySelector(sel); },
+        querySelectorAll(sel) { return kofRoot.querySelectorAll(sel); }
     };
-  }
-  function kofEscapeHtml(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  }
-  function kofSerialize(node) {
+    globalThis.window = globalThis;
+    globalThis.__kofRegisterElement = function (id, el) { kofElements[id] = el; };
+}
+
+function kofEscapeHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function kofSerialize(node) {
     if (!node) return "";
-    let tag = node.tagName ? node.tagName.toLowerCase() : "div", attrs = "";
-    node.id && (attrs += ' id="' + kofEscapeHtml(node.id) + '"'), node.className && (attrs += ' class="' + kofEscapeHtml(node.className) + '"'), node.src && (attrs += ' src="' + kofEscapeHtml(node.src) + '"');
-    let inner = Array.from(node.children || []).map(kofSerialize).join("");
-    if (tag === "hr" || tag === "iframe" || tag === "br" || tag === "img")
-      return "<" + tag + attrs + ">";
-    let content = inner.length > 0 ? inner : kofEscapeHtml(node.textContent || "");
+    const tag = (node.tagName ? node.tagName.toLowerCase() : "div");
+    let attrs = "";
+    if (node.id) attrs += ' id="' + kofEscapeHtml(node.id) + '"';
+    if (node.className) attrs += ' class="' + kofEscapeHtml(node.className) + '"';
+    if (node.src) attrs += ' src="' + kofEscapeHtml(node.src) + '"';
+    const kids = Array.from(node.children || []);
+    const inner = kids.map(kofSerialize).join("");
+    if (tag === "hr" || tag === "iframe" || tag === "br" || tag === "img") {
+        return "<" + tag + attrs + ">";
+    }
+    const content = inner.length > 0 ? inner : kofEscapeHtml(node.textContent || "");
     return "<" + tag + attrs + ">" + content + "</" + tag + ">";
-  }
-  function kofUiSerializeHtml() {
-    let root = document.getElementById("kof-root");
+}
+
+function kofUiSerializeHtml() {
+    const root = document.getElementById("kof-root");
     if (!root) return "";
-    let html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>` + kofEscapeHtml(document.title || "Kof") + `</title>
-</head>
-<body>
-` + kofSerialize(root) + `
-</body>
-</html>
-`;
-    return globalThis.kof__uiRootHtml = html, html;
-  }
-  function kofPrintln(x) {
+    const html = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n"
+            + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
+            + "<title>" + kofEscapeHtml(document.title || "Kof") + "</title>\n"
+            + "</head>\n<body>\n" + kofSerialize(root) + "\n</body>\n</html>\n";
+    globalThis.kof__uiRootHtml = html;
+    return html;
+}
+
+function kofPrintln(x) {
     console.log(x);
-  }
-  function kofUiWindowNew(title) {
-    if (typeof document > "u")
-      return -1;
+}
+
+// D-NULL-INTENT (#278): Boolean.valueOf(Z) no JS — normaliza
+// truthy/falsy num true/false estrito, mas PRESERVA null (Bool?
+// genuino de Map.get/put/remove agora carrega ausência real; o
+// ternário cru `x ? true : false` colapsava null -> false,
+// apagando a ausência no println/String.valueOf).
+function kofUiWindowNew(title) {
+    if (typeof document === "undefined") {
+        return -1;
+    }
     kofUiInjectTheme();
-    let root = document.getElementById("kof-root");
-    if (!root)
-      return -1;
-    typeof window.__kofWindows > "u" && (window.__kofWindows = {});
-    let id = Object.keys(window.__kofWindows).length + 1, winEl = document.createElement("div");
-    return winEl.className = "kof-window", window.__kofWindows[id] = winEl, document.title = title, root.appendChild(winEl), id;
-  }
-  function kofUiInjectTheme() {
-    if (typeof document > "u" || document.getElementById("kof-theme")) return;
-    let style = document.createElement("style");
-    style.id = "kof-theme", style.textContent = [
-      ":root { --bg:#282a36; --fg:#f8f8f2; --panel:#21222c; --border:#2e303e;",
-      "  --hover:#2e303e; --accent:#8be9fd; --dim:#6272a4; --output:#50fa7b; }",
-      "html, body { margin:0; height:100%; overflow:hidden; }",
-      "body { background:var(--bg); color:var(--fg); font-family:",
-      '  "Cascadia Code", "Fira Code", Consolas, Menlo, monospace; }',
-      ".kof-label { color:var(--output); font-size:13px; line-height:1.5;",
-      "  white-space:pre-wrap; padding:2px 0; }",
-      // issues #75/#76 (10/09): o runtime AO VIVO não tinha NENHUMA
-      // regra p/ Column/Row (renderizavam divs crus, sem flex) nem
-      // p/ Button/Input/Textarea/Select (controles nativos crus).
-      // Espelha o exportador ESTÁTICO (JsArtifactWriter) no MESMO
-      // vocabulário de var(--…) do tema — paridade vivo↔estático.
-      ".kof-column { display:flex; flex-direction:column; gap:8px; }",
-      ".kof-row { display:flex; flex-direction:row; flex-wrap:wrap;",
-      "  gap:8px; align-items:flex-start; }",
-      ".kof-button { font-size:13px; padding:6px 14px; cursor:pointer;",
-      "  background:var(--panel); color:var(--fg);",
-      "  border:1px solid var(--border); border-radius:6px; }",
-      ".kof-button:hover { background:var(--hover); }",
-      ".kof-input, .kof-textarea, .kof-select { font-size:13px; padding:6px 10px;",
-      "  background:var(--panel); color:var(--fg); font-family:inherit;",
-      "  border:1px solid var(--border); border-radius:6px; }",
-      ".kof-input { width:100%; }",
-      ".kof-view { box-sizing:border-box; }",
-      ".kof-window { box-sizing:border-box; padding:16px; border-radius:8px;",
-      "  border:1px solid var(--border); background:var(--bg);",
-      "  display:flex; flex-direction:column; gap:8px; }"
-    ].join(`
-`), (document.head || document.documentElement).appendChild(style);
-  }
-  function kofUiWindowSetTitle(window2, title) {
-    typeof document < "u" && (document.title = title);
-  }
-  function kofUiWindowBind(win, label) {
-    if (typeof document > "u")
-      return;
-    let winEl = globalThis.window && globalThis.window.__kofWindows && globalThis.window.__kofWindows[win];
+    const root = document.getElementById("kof-root");
+    if (!root) {
+        return -1;
+    }
+    if (typeof window.__kofWindows === "undefined") {
+        window.__kofWindows = {};
+    }
+    const id = Object.keys(window.__kofWindows).length + 1;
+    const winEl = document.createElement("div");
+    winEl.className = "kof-window";
+    window.__kofWindows[id] = winEl;
+    document.title = title;
+    root.appendChild(winEl);
+    return id;
+}
+
+// Kof UI theme — the same Dracula/VSCode aesthetic in every host
+// (browser, webview, KofWebHost): one Kof program, one look.
+function kofUiInjectTheme() {
+    if (typeof document === "undefined") return;
+    if (document.getElementById("kof-theme")) return;
+    const style = document.createElement("style");
+    style.id = "kof-theme";
+    style.textContent = [
+        ":root { --bg:#282a36; --fg:#f8f8f2; --panel:#21222c; --border:#2e303e;",
+        "  --hover:#2e303e; --accent:#8be9fd; --dim:#6272a4; --output:#50fa7b; }",
+        "html, body { margin:0; height:100%; overflow:hidden; }",
+        "body { background:var(--bg); color:var(--fg); font-family:",
+        '  "Cascadia Code", "Fira Code", Consolas, Menlo, monospace; }',
+        ".kof-label { color:var(--output); font-size:13px; line-height:1.5;",
+        "  white-space:pre-wrap; padding:2px 0; }",
+        // issues #75/#76 (10/09): o runtime AO VIVO não tinha NENHUMA
+        // regra p/ Column/Row (renderizavam divs crus, sem flex) nem
+        // p/ Button/Input/Textarea/Select (controles nativos crus).
+        // Espelha o exportador ESTÁTICO (JsArtifactWriter) no MESMO
+        // vocabulário de var(--…) do tema — paridade vivo↔estático.
+        ".kof-column { display:flex; flex-direction:column; gap:8px; }",
+        ".kof-row { display:flex; flex-direction:row; flex-wrap:wrap;",
+        "  gap:8px; align-items:flex-start; }",
+        ".kof-button { font-size:13px; padding:6px 14px; cursor:pointer;",
+        "  background:var(--panel); color:var(--fg);",
+        "  border:1px solid var(--border); border-radius:6px; }",
+        ".kof-button:hover { background:var(--hover); }",
+        ".kof-input, .kof-textarea, .kof-select { font-size:13px; padding:6px 10px;",
+        "  background:var(--panel); color:var(--fg); font-family:inherit;",
+        "  border:1px solid var(--border); border-radius:6px; }",
+        ".kof-input { width:100%; }",
+        ".kof-view { box-sizing:border-box; }",
+        ".kof-window { box-sizing:border-box; padding:16px; border-radius:8px;",
+        "  border:1px solid var(--border); background:var(--bg);",
+        "  display:flex; flex-direction:column; gap:8px; }"
+    ].join("\n");
+    (document.head || document.documentElement).appendChild(style);
+}
+
+function kofUiWindowSetTitle(window, title) {
+    if (typeof document !== "undefined") {
+        document.title = title;
+    }
+}
+
+function kofUiWindowBind(win, label) {
+    if (typeof document === "undefined") {
+        return;
+    }
+    const winEl = globalThis.window && globalThis.window.__kofWindows
+            && globalThis.window.__kofWindows[win];
     if (!winEl) return;
-    let comp = kofUiComponents.get(label);
+    // Component Core: a component binds under the window and mounts
+    // (view + onMount) — lifecycle is automatic.
+    const comp = kofUiComponents.get(label);
     if (comp) {
-      comp.el && winEl.appendChild(comp.el), kofUiComponentMount(label);
-      return;
+        if (comp.el) winEl.appendChild(comp.el);
+        kofUiComponentMount(label);
+        return;
     }
-    let nodes = globalThis.window && globalThis.window.__kofNodes, node = nodes && nodes[label];
-    node && winEl.appendChild(node);
-  }
-  function kofUiWindowShow(window2) {
+    const nodes = globalThis.window && globalThis.window.__kofNodes;
+    const node = nodes && nodes[label];
+    if (node) {
+        winEl.appendChild(node);
+    }
+}
+
+function kofUiWindowShow(window) {
     kofUiSerializeHtml();
-  }
-  var kofUiComponents = /* @__PURE__ */ new Map(), kofNodeSeq = 0, KOF_UI_EV = {
-    click: "click",
-    dblclick: "dblclick",
-    mousedown: "mousedown",
-    mouseup: "mouseup",
-    mousemove: "mousemove",
-    mouseenter: "mouseenter",
-    mouseleave: "mouseleave",
-    wheel: "wheel",
-    keydown: "keydown",
-    keyup: "keyup",
-    focus: "focus",
-    blur: "blur",
-    input: "input",
-    change: "change"
-  };
-  function kofUiRunFn(fn) {
-    return fn && typeof fn.invoke == "function" ? fn.invoke.bind(fn) : fn;
-  }
-  function kofUiReportError(where, e) {
-    let detail = e && (e.stack || e.message) ? e.stack || e.message : String(e);
+}
+// ── Component Core (docs/ui/architecture.md) ─────────────
+// A UI is a tree of components. A Component node carries: identity,
+// state (Int), a view builder, lifecycle hooks, effects (auto-cleaned)
+// and events. Rendering is KofJS; the framework (not the widget)
+// owns the tree, the render schedule and the lifecycle.
+const kofUiComponents = new Map();
+let kofNodeSeq = 0;
+const KOF_UI_EV = {
+    click: "click", dblclick: "dblclick", mousedown: "mousedown",
+    mouseup: "mouseup", mousemove: "mousemove", mouseenter: "mouseenter",
+    mouseleave: "mouseleave", wheel: "wheel", keydown: "keydown",
+    keyup: "keyup", focus: "focus", blur: "blur", input: "input", change: "change"
+};
+
+function kofUiRunFn(fn) {
+    // a Kof lambda compiles to a class with an invoke() method;
+    // plain functions pass through.
+    return fn && typeof fn.invoke === "function" ? fn.invoke.bind(fn) : fn;
+}
+
+function kofUiReportError(where, e) {
+    // §266-filha: os catches deste módulo ENGOLIAM o throw do
+    // código do usuário — view que crashava = UI vazia SEM NENHUMA
+    // mensagem no console do browser (a lição do §266: o loop estava
+    // errado, mas QUALQUER outro crash de view continuava silencioso
+    // p/ UI e barulhento só headless). Mantém a resiliência (um
+    // component quebrado não derruba os irmãos do flush) mas TORNA
+    // O ERRO VISÍVEL: console.error com contexto + o throw original
+    // (stack quando houver), espelhando o stderr do JVM/Script.
+    const detail = e && (e.stack || e.message) ? (e.stack || e.message) : String(e);
     try {
-      (console.error || console.log)("[kof] " + where + ": " + detail);
-    } catch {
-    }
-  }
-  function kofUiRender(c) {
+        (console.error || console.log)("[kof] " + where + ": " + detail);
+    } catch (ignored) {}
+}
+
+function kofUiRender(c) {
+    // rebuild the component's child subtree: run the view builder
+    // with the current state, then swap the fresh DOM in place.
+    // (handle diffing is a Phase-9 optimization)
     let rootId = 0;
     try {
-      let v = kofUiRunFn(c.view);
-      rootId = v ? v(c.state) : 0;
+        const v = kofUiRunFn(c.view);
+        rootId = v ? v(c.state) : 0;
     } catch (e) {
-      kofUiReportError("view render threw for component " + (c && c.name), e), rootId = 0;
+        kofUiReportError("view render threw for component " + (c && c.name), e);
+        rootId = 0;
     }
     if (c.el) {
-      let oldEl = window.__kofNodes && window.__kofNodes[c.root];
-      c.root !== rootId && oldEl && oldEl.parentNode === c.el && oldEl.parentNode.removeChild && c.el.removeChild(oldEl);
-      let rootEl = window.__kofNodes && window.__kofNodes[rootId];
-      rootEl && rootEl.parentNode !== c.el && c.el.appendChild(rootEl);
+        const oldEl = window.__kofNodes && window.__kofNodes[c.root];
+        if (c.root !== rootId && oldEl
+                && oldEl.parentNode === c.el && oldEl.parentNode.removeChild) {
+            c.el.removeChild(oldEl);
+        }
+        const rootEl = window.__kofNodes && window.__kofNodes[rootId];
+        if (rootEl && rootEl.parentNode !== c.el) {
+            c.el.appendChild(rootEl);
+        }
     }
     c.root = rootId;
-  }
-  function kofUiRunEffect(n, f) {
+}
+
+function kofUiRunEffect(n, f) {
     let result;
     try {
-      result = f();
+        result = f();
     } catch (e) {
-      kofUiReportError("effect threw", e), result = null;
+        kofUiReportError("effect threw", e);
+        result = null;
     }
     n.effects.push(result);
-  }
-  function kofUiComponentMount(c) {
-    let n = kofUiComponents.get(c);
+}
+
+function kofUiComponentMount(c) {
+    const n = kofUiComponents.get(c);
     if (!n || n.mounted) return;
-    n.mounted = !0, n.view && kofUiRender(n);
-    let om = kofUiRunFn(n.onMountFn);
-    if (om)
-      try {
-        om();
-      } catch (e) {
-        kofUiReportError("onMount threw", e);
-      }
-    for (let f of n.effectFns) kofUiRunEffect(n, f);
-  }
-  function kofUiWidgetOn(id, type, handler) {
+    n.mounted = true;
+    // mount: (mount view) -> onMount() -> effects — deterministic
+    if (n.view) kofUiRender(n);
+    const om = kofUiRunFn(n.onMountFn);
+    if (om) {
+        try { om(); } catch (e) { kofUiReportError("onMount threw", e); }
+    }
+    for (const f of n.effectFns) kofUiRunEffect(n, f);
+}
+
+function kofUiWidgetOn(id, type, handler) {
     if (!type || !handler) return;
-    let node = window.__kofNodes && window.__kofNodes[id];
+    const node = window.__kofNodes && window.__kofNodes[id];
     if (!node) return;
     node._kofHandlers = node._kofHandlers || {};
-    let domType = KOF_UI_EV[type] || type, arr = node._kofHandlers[domType];
-    arr ? arr.push(handler) : node._kofHandlers[domType] = [handler], typeof node.addEventListener == "function" && node.addEventListener(domType, function(ev) {
-      kofUiDispatchWidgetEvent(id, domType, ev);
-    });
-  }
-  function kofUiLinkNew(text2, url) {
-    if (typeof document > "u") return -1;
-    let a = document.createElement("a");
-    a.textContent = text2, a.href = url, a.target = "_blank", a.rel = "noopener", a.className = "kof-link", typeof window.__kofNodes > "u" && (window.__kofNodes = {});
-    let id = ++kofNodeSeq;
-    return window.__kofNodes[id] = a, id;
-  }
-  function kofUiLabelNew(text2) {
-    if (typeof document > "u")
-      return -1;
-    let span = document.createElement("span");
-    span.textContent = text2, span.className = "kof-label", typeof window.__kofNodes > "u" && (window.__kofNodes = {});
-    let id = ++kofNodeSeq;
-    return window.__kofNodes[id] = span, id;
-  }
-  function kofUiCreateNode(tag, className) {
-    if (typeof document > "u")
-      return -1;
-    let el = document.createElement(tag);
-    el.className = className, typeof window.__kofNodes > "u" && (window.__kofNodes = {});
-    let id = ++kofNodeSeq;
-    return window.__kofNodes[id] = el, id;
-  }
-  function kofUiSetAction(id, action) {
-    if (!action || typeof document > "u")
-      return;
-    window.__kofActions = window.__kofActions || {}, window.__kofActions[id] = action;
-    let node = window.__kofNodes[id];
-    node && typeof node.addEventListener == "function" && node.addEventListener("click", function() {
-      action.invoke();
-    });
-  }
-  function kofUiButtonNewAction(text2, action) {
-    let id = kofUiCreateNode("button", "kof-button");
-    return id < 0 ? -1 : (window.__kofNodes[id].textContent = text2, kofUiSetAction(id, action), id);
-  }
-  function kofUiColumnNew(ids) {
-    let id = kofUiCreateNode("div", "kof-column");
-    if (id < 0)
-      return -1;
-    let node = window.__kofNodes[id];
-    if (ids)
-      for (let childId of ids) {
-        let child = window.__kofNodes[childId];
-        child && node.appendChild(child);
-      }
-    return id;
-  }
-  function kofUiRowNew(ids) {
-    let id = kofUiCreateNode("div", "kof-row");
-    if (id < 0)
-      return -1;
-    let node = window.__kofNodes[id];
-    if (ids)
-      for (let childId of ids) {
-        let child = window.__kofNodes[childId];
-        child && node.appendChild(child);
-      }
-    return id;
-  }
-  function kofUiCanvasNew(w, h) {
-    if (typeof document > "u") return -1;
-    let canvas = document.createElement("canvas");
-    canvas.width = w, canvas.height = h, canvas.className = "kof-canvas", canvas.style.display = "block";
-    let ctx = canvas.getContext("2d");
-    typeof window.__kofNodes > "u" && (window.__kofNodes = {});
-    let id = ++kofNodeSeq;
-    window.__kofNodes[id] = canvas, window.__kofCanvasCtx = window.__kofCanvasCtx || {}, window.__kofCanvasCtx[id] = ctx;
-    let root = document.getElementById("kof-root");
-    return root && root.appendChild(canvas), id;
-  }
-  function kofUiCanvasBeginPath(id) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && ctx.beginPath();
-  }
-  function kofUiCanvasClosePath(id) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && ctx.closePath();
-  }
-  function kofUiCanvasMoveTo(id, x, y) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && ctx.moveTo(x, y);
-  }
-  function kofUiCanvasLineTo(id, x, y) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && ctx.lineTo(x, y);
-  }
-  function kofUiCanvasFill(id) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && ctx.fill(), kofUiSerializeHtml();
-  }
-  function kofUiCanvasSetFill(id, color) {
-    let ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
-    ctx && (ctx.fillStyle = kofUiColorToCss(color));
-  }
-  function kofUiAudioNew(src) {
-    let id = kofUiCreateNode("audio", "kof-audio");
-    return id < 0 ? -1 : (window.__kofNodes[id].src = src, id);
-  }
-  function kofUiAudioSetSrc(audio, src) {
-    typeof document < "u" && window.__kofNodes && window.__kofNodes[audio] && (window.__kofNodes[audio].src = src);
-  }
-  function kofUiAudioPlay(audio) {
-    typeof document < "u" && window.__kofNodes && window.__kofNodes[audio] && typeof window.__kofNodes[audio].play == "function" && window.__kofNodes[audio].play();
-  }
-  function kofUiColorToCss(color) {
-    let r = color >>> 24 & 255, g = color >>> 16 & 255, b = color >>> 8 & 255, a = color & 255;
-    return a === 255 ? "rgb(" + r + ", " + g + ", " + b + ")" : "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
-  }
-  function kofListNew() {
-    return [];
-  }
-  function kofListAdd(list, value) {
-    list.push(value);
-  }
-  function kofListGet(list, index) {
-    if (index < 0 || index >= list.length)
-      throw new Error("Index out of bounds: " + index + " (size " + list.length + ")");
-    return list[index];
-  }
-  var kofTimeJobs = /* @__PURE__ */ new Map(), kofTimeSeq = { value: 0 };
-  function kofTimeRunJob(fn) {
-    typeof fn.invoke == "function" ? fn.invoke() : typeof fn == "function" && fn();
-  }
-  function kofTimeInterval(ms, fn) {
-    if (typeof setInterval == "function")
-      return "n" + String(setInterval(() => kofTimeRunJob(fn), ms));
-    let id = "c" + ++kofTimeSeq.value;
-    return kofTimeJobs.set(id, { ms, run: () => kofTimeRunJob(fn), next: Date.now() + ms }), id;
-  }
-  function kofUiMakeEvent(domType, ev) {
-    let raw = ev || null;
-    return {
-      stopped: !1,
-      // Kof accesses event kind as e.type() (a method call)
-      type() {
-        return domType;
-      },
-      stopPropagation() {
-        this.stopped = !0;
-      },
-      // UI006: key/value/x/y do DOM event real (null/vazio no
-      // host mock e no emit sintético).
-      key() {
-        return raw && typeof raw.key == "string" ? raw.key : "";
-      },
-      value() {
-        if (!raw) return "";
-        let t = raw.target;
-        return t && typeof t.value == "string" ? t.value : "";
-      },
-      x() {
-        return raw && typeof raw.clientX == "number" ? raw.clientX : 0;
-      },
-      y() {
-        return raw && typeof raw.clientY == "number" ? raw.clientY : 0;
-      },
-      // UI006 residual: alvo do evento como id do nó (fallback
-      // tagName minúscula quando sem setId; "" fora do browser).
-      target() {
-        let t = raw && raw.target;
-        return t ? t.id ? String(t.id) : t.tagName ? t.tagName.toLowerCase() : "" : "";
-      },
-      relatedTarget() {
-        let t = raw && raw.relatedTarget;
-        return t ? t.id ? String(t.id) : t.tagName ? t.tagName.toLowerCase() : "" : "";
-      },
-      // raw DOM event passthrough (null in the host mock)
-      raw
-    };
-  }
-  function kofUiDispatchWidgetEvent(id, domType, ev) {
-    let node = window.__kofNodes && window.__kofNodes[id];
-    if (!node) return;
-    let h = node._kofHandlers && node._kofHandlers[domType];
-    if (!h) return;
-    let kofEv = kofUiMakeEvent(domType, ev);
-    for (let fn of h)
-      try {
-        typeof fn.invoke == "function" ? fn.invoke(kofEv) : fn(kofEv);
-      } catch {
-      }
-  }
+    const domType = KOF_UI_EV[type] || type;
+    const arr = node._kofHandlers[domType];
+    if (arr) arr.push(handler);
+    else node._kofHandlers[domType] = [handler];
+    if (typeof node.addEventListener === "function") {
+        node.addEventListener(domType, function (ev) {
+            kofUiDispatchWidgetEvent(id, domType, ev);
+        });
+    }
+}
 
-  // web/Default.mjs
-  var K = class {
+function kofUiLinkNew(text, url) {
+    if (typeof document === "undefined") return -1;
+    const a = document.createElement("a");
+    a.textContent = text;
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.className = "kof-link";
+    if (typeof window.__kofNodes === "undefined") window.__kofNodes = {};
+    const id = ++kofNodeSeq;
+    window.__kofNodes[id] = a;
+    return id;
+}
+// ── Font ───────────────────────────────────────────
+function kofUiLabelNew(text) {
+    if (typeof document === "undefined") {
+        return -1;
+    }
+    const span = document.createElement("span");
+    span.textContent = text;
+    span.className = "kof-label";
+    if (typeof window.__kofNodes === "undefined") {
+        window.__kofNodes = {};
+    }
+    const id = ++kofNodeSeq;
+    window.__kofNodes[id] = span;
+    return id;
+}
+
+function kofUiCreateNode(tag, className) {
+    if (typeof document === "undefined") {
+        return -1;
+    }
+    const el = document.createElement(tag);
+    el.className = className;
+    if (typeof window.__kofNodes === "undefined") {
+        window.__kofNodes = {};
+    }
+    const id = ++kofNodeSeq;
+    window.__kofNodes[id] = el;
+    return id;
+}
+
+function kofUiSetAction(id, action) {
+    if (!action || typeof document === "undefined") {
+        return;
+    }
+    window.__kofActions = window.__kofActions || {};
+    window.__kofActions[id] = action;
+    const node = window.__kofNodes[id];
+    if (node && typeof node.addEventListener === "function") {
+        node.addEventListener("click", function () {
+            action.invoke();
+        });
+    }
+}
+
+function kofUiButtonNewAction(text, action) {
+    const id = kofUiCreateNode("button", "kof-button");
+    if (id < 0) {
+        return -1;
+    }
+    window.__kofNodes[id].textContent = text;
+    kofUiSetAction(id, action);
+    return id;
+}
+
+function kofUiColumnNew(ids) {
+    const id = kofUiCreateNode("div", "kof-column");
+    if (id < 0) {
+        return -1;
+    }
+    const node = window.__kofNodes[id];
+    if (ids) {
+        for (const childId of ids) {
+            const child = window.__kofNodes[childId];
+            if (child) {
+                node.appendChild(child);
+            }
+        }
+    }
+    return id;
+}
+
+function kofUiRowNew(ids) {
+    const id = kofUiCreateNode("div", "kof-row");
+    if (id < 0) {
+        return -1;
+    }
+    const node = window.__kofNodes[id];
+    if (ids) {
+        for (const childId of ids) {
+            const child = window.__kofNodes[childId];
+            if (child) {
+                node.appendChild(child);
+            }
+        }
+    }
+    return id;
+}
+
+function kofUiCanvasNew(w, h) {
+    if (typeof document === "undefined") return -1;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    canvas.className = "kof-canvas";
+    canvas.style.display = "block";
+    const ctx = canvas.getContext("2d");
+    if (typeof window.__kofNodes === "undefined") window.__kofNodes = {};
+    const id = ++kofNodeSeq;
+    window.__kofNodes[id] = canvas;
+    window.__kofCanvasCtx = window.__kofCanvasCtx || {};
+    window.__kofCanvasCtx[id] = ctx;
+    // renderiza standalone: anexa ao root (w.bind(c) re-parenteia
+    // para a janela — appendChild remove do pai anterior)
+    const root = document.getElementById("kof-root");
+    if (root) root.appendChild(canvas);
+    return id;
+}
+function kofUiCanvasBeginPath(id) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.beginPath();
+}
+function kofUiCanvasClosePath(id) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.closePath();
+}
+function kofUiCanvasMoveTo(id, x, y) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.moveTo(x, y);
+}
+function kofUiCanvasLineTo(id, x, y) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.lineTo(x, y);
+}
+function kofUiCanvasFill(id) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.fill();
+    kofUiSerializeHtml();
+}
+function kofUiCanvasSetFill(id, color) {
+    const ctx = window.__kofCanvasCtx && window.__kofCanvasCtx[id];
+    if (ctx) ctx.fillStyle = kofUiColorToCss(color);
+}
+function kofUiAudioNew(src) {
+    const id = kofUiCreateNode("audio", "kof-audio");
+    if (id < 0) {
+        return -1;
+    }
+    window.__kofNodes[id].src = src;
+    return id;
+}
+
+function kofUiAudioSetSrc(audio, src) {
+    if (typeof document !== "undefined" && window.__kofNodes && window.__kofNodes[audio]) {
+        window.__kofNodes[audio].src = src;
+    }
+}
+
+function kofUiAudioPlay(audio) {
+    if (typeof document !== "undefined" && window.__kofNodes && window.__kofNodes[audio]
+            && typeof window.__kofNodes[audio].play === "function") {
+        window.__kofNodes[audio].play();
+    }
+}
+// ── Layout primitives (docs/ui/architecture.md §2.8) ──────
+// CSS-first: the framework never computes pixel positions; each
+// primitive maps to a flex/grid CSS pattern.
+function kofUiColorToCss(color) {
+    const r = (color >>> 24) & 0xFF;
+    const g = (color >>> 16) & 0xFF;
+    const b = (color >>> 8) & 0xFF;
+    const a = color & 0xFF;
+    if (a === 255) {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+    return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
+}
+
+function kofListNew() {
+    return [];
+}
+
+function kofListAdd(list, value) {
+    list.push(value);
+}
+
+function kofListGet(list, index) {
+    if (index < 0 || index >= list.length) {
+        throw new Error("Index out of bounds: " + index + " (size " + list.length + ")");
+    }
+    return list[index];
+}
+// §103.1 (#103): decode<Map<String,T>> no JS — monta um Map
+// real (o else dava objeto puro: m.size/m.get quebravam); com
+// decoder, cada valor é bindado à classe.
+// ── Web runtime (WEB001) — GraalJS HttpServer com handler invoke
+// Handler lambda tem metodo invoke(); usamos Value para interop.
+const kofTimeJobs = new Map();
+const kofTimeSeq = { value: 0 };
+function kofTimeRunJob(fn) {
+    if (typeof fn.invoke === 'function') fn.invoke();
+    else if (typeof fn === 'function') fn();
+}
+function kofTimeInterval(ms, fn) {
+    if (typeof setInterval === 'function') {
+        return "n" + String(setInterval(() => kofTimeRunJob(fn), ms));
+    }
+    const id = "c" + (++kofTimeSeq.value);
+    kofTimeJobs.set(id, { ms: ms, run: () => kofTimeRunJob(fn), next: Date.now() + ms });
+    return id;
+}
+// ── kof.security (docs/stdlib/security.md §5) ────────────────────
+// ── AES-256-GCM (SECN002 fechado 01/09) ───────────────────
+// Puro JS (roda no GraalJS e no browser). Formato idêntico ao
+// JVM/Native: aesgcm$<ivB64>$<ct||tagB64>, key 32 bytes (64 hex),
+// IV 12 bytes aleatórios, tag 128-bit. S-box FIPS 197; GHASH/CTR
+// NIST SP 800-38D. Validado byte-a-byte contra node:crypto e o
+// vetor NIST (KofSecurityTest.aesGcmJsRoundTrip + paridade JVM).
+
+    // ── kof.validation (STDLIB S12) — pontuação BR ─────────────
+    // 11 dígitos => DDD.DDD.DDD-DD; 8 => DDDDD-DDDD; senão original
+    // (null => null; nunca lança — face leniente da lane).
+        // ── kof.math (STDLIB S1) — Int-only, paridade JVM/Native ─────
+
+// kof.random (STDLIB S10a) — face não-críptográfica. Entropia do
+// SO: kof_platform (SecureRandom no runner Node); no browser o
+// proxy lança, cai em crypto.getRandomValues. bound<=0 -> 0
+// (leniente — contrato do plano; security.randomInt lança).
+// ── kof.math S1b.1 — Double puros (paridade JVM/Native) ─────
+// Bool = 1/0 (chokepoint §93 cuida do ==true).
+// ── §181 (13/09): casts Double/Float -> Int/Long SATURANTES
+// (JLS 5.1.3 — NaN => 0, > MAX => MAX, < MIN => MIN). O
+// Math.trunc cru dava 3e9 (fora do Int32), NaN e Infinity.
+// Long = BigInt saturado (paridade 64-bit do §81).
+// ── §264: Double/Float → string no formato do JDK ─────────────
+// Regra Double.toString: significante com round-trip mínimo,
+// decimal quando -3 <= exp < 7, senão E±m sem leading-zero.
+// Sempre ao menos um dígito fracionário (4 → "4.0").
+
+// ── kof.net (STDLIB S8) ────────────────────────────────────────
+
+// ── kof.uuid (STDLIB S3b / S3b.2) ──────────────────────────────
+// v4: kof_platform.randomBytesHex (16 B) -> RFC 4122
+
+        // ── kof.strings (STDLIB S3.2) — whitespace ──────────────────
+// Fase 5 (docs/ui/architecture.md §2.5): target -> bubbles up the
+// component tree (child -> parent). The handler receives a Kof
+// Event with type + stopPropagation support.
+function kofUiMakeEvent(domType, ev) {
+    const raw = ev || null;
+    return {
+        stopped: false,
+        // Kof accesses event kind as e.type() (a method call)
+        type() { return domType; },
+        stopPropagation() { this.stopped = true; },
+        // UI006: key/value/x/y do DOM event real (null/vazio no
+        // host mock e no emit sintético).
+        key() {
+            return raw && typeof raw.key === "string" ? raw.key : "";
+        },
+        value() {
+            if (!raw) return "";
+            const t = raw.target;
+            return t && typeof t.value === "string" ? t.value : "";
+        },
+        x() { return raw && typeof raw.clientX === "number" ? raw.clientX : 0; },
+        y() { return raw && typeof raw.clientY === "number" ? raw.clientY : 0; },
+        // UI006 residual: alvo do evento como id do nó (fallback
+        // tagName minúscula quando sem setId; "" fora do browser).
+        target() {
+            const t = raw && raw.target;
+            if (!t) return "";
+            return t.id ? String(t.id)
+                    : (t.tagName ? t.tagName.toLowerCase() : "");
+        },
+        relatedTarget() {
+            const t = raw && raw.relatedTarget;
+            if (!t) return "";
+            return t.id ? String(t.id)
+                    : (t.tagName ? t.tagName.toLowerCase() : "");
+        },
+        // raw DOM event passthrough (null in the host mock)
+        raw: raw
+    };
+}
+
+// UI006: dispatch de widget DOM (fora da árvore de Component) —
+// o handler recebe o kofEv construído do evento DOM real.
+function kofUiDispatchWidgetEvent(id, domType, ev) {
+    const node = window.__kofNodes && window.__kofNodes[id];
+    if (!node) return;
+    const h = node._kofHandlers && node._kofHandlers[domType];
+    if (!h) return;
+    const kofEv = kofUiMakeEvent(domType, ev);
+    for (const fn of h) {
+        try {
+            if (typeof fn.invoke === "function") fn.invoke(kofEv);
+            else fn(kofEv);
+        } catch (e) {}
+    }
+}
+// Generated by the Kof compiler — KofJS backend. Do not edit.
+// Target: ECMAScript 2022+ (ES modules)
+// Module: Default
+
+
+
+class K {
     static W = 640;
     static H = 400;
     static MENU = 0;
@@ -701,21 +842,25 @@
     static S_BLIP = 10;
     static S_RISE = 11;
     static S_TIRED = 12;
-    static RATE = 8e3;
+    static RATE = 8000;
     static REPO = "GITHUB.COM/PUBLIOSANTOS/RINGUE-KOF-87";
     static B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     static FCH = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-!:.'/?+>< ()*=";
     static FBITS = "111101101101111010110010010111111001111100111111001111001111101101111001001111100111001111111100111101111111001001010010111101111101111111101111001111010101111101101110101110101110011100100100011110101101101110111100110100111111100110100100011100101101011101101111101101111010010010111001001001101010101101110101101100100100100111101111111101101110101101101101010101101101010110101110100100010101101110011110101110101101011100010001110111010010010010101101101101111101101101101010101101111111101101101010101101101101010010010111001010100111000000111000000010010010000010000010000010000000000000000010010010000000000001001010100100110001010000010000010111010000100010001010100001010100010001000000000000000010100100100010010001001001010000101010101000000111000111000";
+
     constructor() {
+        return;
     }
-  }, Boxer = class {
+}
+
+class Boxer {
     kind = 0;
     human = 1;
     x = 0;
     z = 50;
     face = 1;
-    str = 1e3;
-    sta = 1e3;
+    str = 1000;
+    sta = 1000;
     meter = 0;
     act = 0;
     actT = 0;
@@ -739,17 +884,89 @@
     aiT = 0;
     thrown = 0;
     landed = 0;
+
     constructor() {
-      this.kind = 0, this.human = !0, this.x = 0, this.z = 50, this.face = 1, this.str = 1e3, this.sta = 1e3, this.meter = 0, this.act = 0, this.actT = 0, this.resolved = !1, this.queue = 0, this.stun = 0, this.flash = 0, this.pts = 0, this.kd = 0, this.kdTotal = 0, this.rise = 0, this.walk = 0, this.inL = !1, this.inR = !1, this.inU = !1, this.inD = !1, this.inG = !1, this.hJ = !1, this.hB = !1, this.hH = !1, this.aiT = 0, this.thrown = 0, this.landed = 0, this.kind = 0, this.human = 1, this.x = 0, this.z = 50, this.face = 1, this.str = 1e3, this.sta = 1e3, this.meter = 0, this.act = 0, this.actT = 0, this.resolved = 0, this.queue = 0, this.stun = 0, this.flash = 0, this.pts = 0, this.kd = 0, this.kdTotal = 0, this.rise = 0, this.walk = 0, this.inL = 0, this.inR = 0, this.inU = 0, this.inD = 0, this.inG = 0, this.hJ = 0, this.hB = 0, this.hH = 0, this.aiT = 0, this.thrown = 0, this.landed = 0;
+        (this.kind = 0);
+        (this.human = true);
+        (this.x = 0);
+        (this.z = 50);
+        (this.face = 1);
+        (this.str = 1000);
+        (this.sta = 1000);
+        (this.meter = 0);
+        (this.act = 0);
+        (this.actT = 0);
+        (this.resolved = false);
+        (this.queue = 0);
+        (this.stun = 0);
+        (this.flash = 0);
+        (this.pts = 0);
+        (this.kd = 0);
+        (this.kdTotal = 0);
+        (this.rise = 0);
+        (this.walk = 0);
+        (this.inL = false);
+        (this.inR = false);
+        (this.inU = false);
+        (this.inD = false);
+        (this.inG = false);
+        (this.hJ = false);
+        (this.hB = false);
+        (this.hH = false);
+        (this.aiT = 0);
+        (this.thrown = 0);
+        (this.landed = 0);
+        (this.kind = 0);
+        (this.human = 1);
+        (this.x = 0);
+        (this.z = 50);
+        (this.face = 1);
+        (this.str = 1000);
+        (this.sta = 1000);
+        (this.meter = 0);
+        (this.act = 0);
+        (this.actT = 0);
+        (this.resolved = 0);
+        (this.queue = 0);
+        (this.stun = 0);
+        (this.flash = 0);
+        (this.pts = 0);
+        (this.kd = 0);
+        (this.kdTotal = 0);
+        (this.rise = 0);
+        (this.walk = 0);
+        (this.inL = 0);
+        (this.inR = 0);
+        (this.inU = 0);
+        (this.inD = 0);
+        (this.inG = 0);
+        (this.hJ = 0);
+        (this.hB = 0);
+        (this.hH = 0);
+        (this.aiT = 0);
+        (this.thrown = 0);
+        (this.landed = 0);
+        return;
     }
-  }, Enc = class {
+}
+
+class Enc {
     acc = 0;
     n = 0;
     out = "";
+
     constructor() {
-      this.acc = 0, this.n = 0, this.out = "", this.acc = 0, this.n = 0, this.out = "";
+        (this.acc = 0);
+        (this.n = 0);
+        (this.out = "");
+        (this.acc = 0);
+        (this.n = 0);
+        (this.out = "");
+        return;
     }
-  }, Sfx = class {
+}
+
+class Sfx {
     uris;
     q1 = -1;
     q2 = -1;
@@ -757,10 +974,27 @@
     rr = 0;
     on = 1;
     noise = 7777;
+
     constructor() {
-      this.uris = null, this.q1 = -1, this.q2 = -1, this.q3 = -1, this.rr = 0, this.on = !0, this.noise = 7777, this.q1 = -1, this.q2 = -1, this.q3 = -1, this.rr = 0, this.on = 1, this.noise = 7777, this.uris = kofListNew();
+        (this.uris = null);
+        (this.q1 = -1);
+        (this.q2 = -1);
+        (this.q3 = -1);
+        (this.rr = 0);
+        (this.on = true);
+        (this.noise = 7777);
+        (this.q1 = -1);
+        (this.q2 = -1);
+        (this.q3 = -1);
+        (this.rr = 0);
+        (this.on = 1);
+        (this.noise = 7777);
+        (this.uris = kofListNew());
+        return;
     }
-  }, Game = class {
+}
+
+class Game {
     state = 0;
     t = 0;
     round = 1;
@@ -784,1301 +1018,2823 @@
     a;
     b;
     sfx;
+
     constructor() {
-      this.state = 0, this.t = 0, this.round = 1, this.rounds = 3, this.clock = 0, this.roundLen = 1800, this.mode = 1, this.diff = 2, this.sel1 = 1, this.sel2 = 0, this.downWho = 0, this.count = 0, this.winner = 0, this.how = "", this.msg = "", this.msgT = 0, this.seed = 4242, this.shake = 0, this.frame = 0, this.prevState = 0, this.a = null, this.b = null, this.sfx = null, this.state = 0, this.t = 0, this.round = 1, this.rounds = 3, this.clock = 0, this.roundLen = 1800, this.mode = 1, this.diff = 2, this.sel1 = 1, this.sel2 = 0, this.downWho = 0, this.count = 0, this.winner = 0, this.how = "", this.msg = "", this.msgT = 0, this.seed = 4242, this.shake = 0, this.frame = 0, this.prevState = 0, this.a = new Boxer(), this.b = new Boxer(), this.sfx = new Sfx();
+        (this.state = 0);
+        (this.t = 0);
+        (this.round = 1);
+        (this.rounds = 3);
+        (this.clock = 0);
+        (this.roundLen = 1800);
+        (this.mode = 1);
+        (this.diff = 2);
+        (this.sel1 = 1);
+        (this.sel2 = 0);
+        (this.downWho = 0);
+        (this.count = 0);
+        (this.winner = 0);
+        (this.how = "");
+        (this.msg = "");
+        (this.msgT = 0);
+        (this.seed = 4242);
+        (this.shake = 0);
+        (this.frame = 0);
+        (this.prevState = 0);
+        (this.a = null);
+        (this.b = null);
+        (this.sfx = null);
+        (this.state = 0);
+        (this.t = 0);
+        (this.round = 1);
+        (this.rounds = 3);
+        (this.clock = 0);
+        (this.roundLen = 1800);
+        (this.mode = 1);
+        (this.diff = 2);
+        (this.sel1 = 1);
+        (this.sel2 = 0);
+        (this.downWho = 0);
+        (this.count = 0);
+        (this.winner = 0);
+        (this.how = "");
+        (this.msg = "");
+        (this.msgT = 0);
+        (this.seed = 4242);
+        (this.shake = 0);
+        (this.frame = 0);
+        (this.prevState = 0);
+        (this.a = new Boxer());
+        (this.b = new Boxer());
+        (this.sfx = new Sfx());
+        return;
     }
-  }, Lambda0 = class {
+}
+
+class Lambda0 {
     g;
+
     invoke() {
-      let g = this.g;
-      if (g.state === K.MENU) {
-        let _fldrecv2 = g, _fldval3 = (g.sel1 + 1 | 0) % 4;
-        _fldrecv2.sel1 = _fldval3;
-      }
-      sfx(g, K.S_BLIP);
-    }
-    constructor(g) {
-      this.g = null, this.g = g;
-    }
-  }, Lambda1 = class {
-    g;
-    invoke() {
-      let g = this.g;
-      if (g.state === K.MENU) {
-        let _fldrecv2 = g, _fldval3 = (g.sel2 + 1 | 0) % 4;
-        _fldrecv2.sel2 = _fldval3;
-      }
-      sfx(g, K.S_BLIP);
-    }
-    constructor(g) {
-      this.g = null, this.g = g;
-    }
-  }, Lambda2 = class {
-    g;
-    invoke() {
-      let g = this.g;
-      if (g.state === K.MENU) {
-        let _fldrecv2 = g, _fldval3 = 3 - g.mode | 0;
-        _fldrecv2.mode = _fldval3;
-      }
-      sfx(g, K.S_BLIP);
-    }
-    constructor(g) {
-      this.g = null, this.g = g;
-    }
-  }, Lambda3 = class {
-    g;
-    invoke() {
-      let g = this.g;
-      if (g.state === K.MENU)
-        if (g.rounds === 3) {
-          let _fldrecv2 = g, _fldval3 = 7;
-          _fldrecv2.rounds = _fldval3;
-        } else {
-          let _fldrecv4 = g, _fldval5 = 3;
-          _fldrecv4.rounds = _fldval5;
+        let g = this.g;
+        if ((g.state === K.MENU)) {
+            let _fldrecv2 = g;
+            let _fldval3 = (((g.sel1 + 1) | 0) % 4);
+            (_fldrecv2.sel1 = _fldval3);
         }
-      sfx(g, K.S_BLIP);
+        sfx(g, K.S_BLIP);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda4 = class {
+}
+
+class Lambda1 {
     g;
+
     invoke() {
-      let g = this.g;
-      if (g.state === K.MENU) {
-        let _fldrecv2 = g, _fldval3 = g.diff % 3 + 1 | 0;
-        _fldrecv2.diff = _fldval3;
-      }
-      sfx(g, K.S_BLIP);
+        let g = this.g;
+        if ((g.state === K.MENU)) {
+            let _fldrecv2 = g;
+            let _fldval3 = (((g.sel2 + 1) | 0) % 4);
+            (_fldrecv2.sel2 = _fldval3);
+        }
+        sfx(g, K.S_BLIP);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda5 = class {
+}
+
+class Lambda2 {
     g;
+
     invoke() {
-      let g = this.g;
-      g.state === K.MENU | g.state === K.OVER && confirm(g);
+        let g = this.g;
+        if ((g.state === K.MENU)) {
+            let _fldrecv2 = g;
+            let _fldval3 = ((3 - g.mode) | 0);
+            (_fldrecv2.mode = _fldval3);
+        }
+        sfx(g, K.S_BLIP);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda6 = class {
+}
+
+class Lambda3 {
     g;
+
     invoke() {
-      let g = this.g, _fldrecv2 = g.sfx, _fldval3 = g.sfx.on ? 0 : 1;
-      _fldrecv2.on = _fldval3, sfx(g, K.S_BLIP);
+        let g = this.g;
+        if ((g.state === K.MENU)) {
+            if ((g.rounds === 3)) {
+                let _fldrecv2 = g;
+                let _fldval3 = 7;
+                (_fldrecv2.rounds = _fldval3);
+            } else {
+                let _fldrecv4 = g;
+                let _fldval5 = 3;
+                (_fldrecv4.rounds = _fldval5);
+            }
+        }
+        sfx(g, K.S_BLIP);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda7 = class {
+}
+
+class Lambda4 {
     g;
+
     invoke() {
-      let g = this.g, _fldrecv2 = g, _fldval3 = K.MENU;
-      _fldrecv2.state = _fldval3;
-      let _fldrecv4 = g, _fldval5 = 0;
-      _fldrecv4.t = _fldval5;
+        let g = this.g;
+        if ((g.state === K.MENU)) {
+            let _fldrecv2 = g;
+            let _fldval3 = (((g.diff % 3) + 1) | 0);
+            (_fldrecv2.diff = _fldval3);
+        }
+        sfx(g, K.S_BLIP);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda8 = class {
+}
+
+class Lambda5 {
+    g;
+
     invoke() {
+        let g = this.g;
+        if (((g.state === K.MENU) | (g.state === K.OVER))) {
+            confirm(g);
+        }
+        return;
+    }
+    constructor(g) {
+        (this.g = null);
+        (this.g = g);
+        return;
+    }
+}
+
+class Lambda6 {
+    g;
+
+    invoke() {
+        let g = this.g;
+        let _fldrecv2 = g.sfx;
+        let _fldval3 = (g.sfx.on ? 0 : 1);
+        (_fldrecv2.on = _fldval3);
+        sfx(g, K.S_BLIP);
+        return;
+    }
+    constructor(g) {
+        (this.g = null);
+        (this.g = g);
+        return;
+    }
+}
+
+class Lambda7 {
+    g;
+
+    invoke() {
+        let g = this.g;
+        let _fldrecv2 = g;
+        let _fldval3 = K.MENU;
+        (_fldrecv2.state = _fldval3);
+        let _fldrecv4 = g;
+        let _fldval5 = 0;
+        (_fldrecv4.t = _fldval5);
+        return;
+    }
+    constructor(g) {
+        (this.g = null);
+        (this.g = g);
+        return;
+    }
+}
+
+class Lambda8 {
+    invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda9 = class {
+}
+
+class Lambda9 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda10 = class {
+}
+
+class Lambda10 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda11 = class {
+}
+
+class Lambda11 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda12 = class {
+}
+
+class Lambda12 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda13 = class {
+}
+
+class Lambda13 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda14 = class {
+}
+
+class Lambda14 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda15 = class {
+}
+
+class Lambda15 {
     invoke() {
+        return;
     }
     constructor() {
+        return;
     }
-  }, Lambda16 = class {
+}
+
+class Lambda16 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !0;
-      _fldrecv3.inL = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = true;
+        (_fldrecv3.inL = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda17 = class {
+}
+
+class Lambda17 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inL = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inL = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda18 = class {
+}
+
+class Lambda18 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inL = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inL = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda19 = class {
+}
+
+class Lambda19 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !0;
-      _fldrecv3.inR = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = true;
+        (_fldrecv3.inR = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda20 = class {
+}
+
+class Lambda20 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inR = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inR = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda21 = class {
+}
+
+class Lambda21 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inR = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inR = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda22 = class {
+}
+
+class Lambda22 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !0;
-      _fldrecv3.inU = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = true;
+        (_fldrecv3.inU = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda23 = class {
+}
+
+class Lambda23 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inU = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inU = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda24 = class {
+}
+
+class Lambda24 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inU = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inU = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda25 = class {
+}
+
+class Lambda25 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !0;
-      _fldrecv3.inD = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = true;
+        (_fldrecv3.inD = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda26 = class {
+}
+
+class Lambda26 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inD = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inD = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda27 = class {
+}
+
+class Lambda27 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inD = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inD = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda28 = class {
+}
+
+class Lambda28 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !0;
-      _fldrecv3.inG = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = true;
+        (_fldrecv3.inG = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda29 = class {
+}
+
+class Lambda29 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inG = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inG = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda30 = class {
+}
+
+class Lambda30 {
     g;
+
     invoke(e) {
-      let _fldrecv3 = this.g.a, _fldval4 = !1;
-      _fldrecv3.inG = _fldval4;
+        let g = this.g;
+        let _fldrecv3 = g.a;
+        let _fldval4 = false;
+        (_fldrecv3.inG = _fldval4);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda31 = class {
+}
+
+class Lambda31 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      press(g, g.a, K.JAB, !0), press(g, g.a, K.JAB, !1);
+        let g = this.g;
+        press(g, g.a, K.JAB, true);
+        press(g, g.a, K.JAB, false);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda32 = class {
+}
+
+class Lambda32 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      press(g, g.a, K.BODY, !0), press(g, g.a, K.BODY, !1);
+        let g = this.g;
+        press(g, g.a, K.BODY, true);
+        press(g, g.a, K.BODY, false);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda33 = class {
+}
+
+class Lambda33 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      press(g, g.a, K.HOOK, !0), press(g, g.a, K.HOOK, !1);
+        let g = this.g;
+        press(g, g.a, K.HOOK, true);
+        press(g, g.a, K.HOOK, false);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda34 = class {
+}
+
+class Lambda34 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      onKey(g, e.key(), !0);
+        let g = this.g;
+        onKey(g, e.key(), true);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda35 = class {
+}
+
+class Lambda35 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      onKey(g, e.key(), !1);
+        let g = this.g;
+        onKey(g, e.key(), false);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda36 = class {
+}
+
+class Lambda36 {
     g;
+
     invoke(e) {
-      let g = this.g;
-      releaseAll(g.a), releaseAll(g.b);
+        let g = this.g;
+        releaseAll(g.a);
+        releaseAll(g.b);
+        return;
     }
     constructor(g) {
-      this.g = null, this.g = g;
+        (this.g = null);
+        (this.g = g);
+        return;
     }
-  }, Lambda37 = class {
+}
+
+class Lambda37 {
     g;
     c;
     ch1;
     ch2;
     ch3;
+
     invoke() {
-      let g = this.g, c = this.c, ch1 = this.ch1, ch2 = this.ch2, ch3 = this.ch3;
-      g.state !== K.PAUSE && tick(g), render(c, g), drainSfx(g, ch1, ch2, ch3);
+        let g = this.g;
+        let c = this.c;
+        let ch1 = this.ch1;
+        let ch2 = this.ch2;
+        let ch3 = this.ch3;
+        if ((g.state !== K.PAUSE)) {
+            tick(g);
+        }
+        render(c, g);
+        drainSfx(g, ch1, ch2, ch3);
+        return;
     }
     constructor(g, c, ch1, ch2, ch3) {
-      this.g = null, this.c = null, this.ch1 = null, this.ch2 = null, this.ch3 = null, this.g = g, this.c = c, this.ch1 = ch1, this.ch2 = ch2, this.ch3 = ch3;
+        (this.g = null);
+        (this.c = null);
+        (this.ch1 = null);
+        (this.ch2 = null);
+        (this.ch3 = null);
+        (this.g = g);
+        (this.c = c);
+        (this.ch1 = ch1);
+        (this.ch2 = ch2);
+        (this.ch3 = ch3);
+        return;
     }
-  };
-  function iabs(v) {
-    return v < 0 ? -v : v;
-  }
-  function imin(p, q) {
-    return p < q ? p : q;
-  }
-  function imax(p, q) {
-    return p > q ? p : q;
-  }
-  function clampi(v, lo, hi) {
-    return v < lo ? lo : v > hi ? hi : v;
-  }
-  function rnd(g, n) {
-    let _fldrecv2 = g, _fldval3 = ((g.seed * 75 | 0) + 74 | 0) % 65537;
-    return _fldrecv2.seed = _fldval3, n <= 0 ? 0 : g.seed % n;
-  }
-  function b64char(e, v) {
-    let _fldrecv2 = e, _fldval3 = String(e.out) + String(K.B64.substring(v, v + 1 | 0));
-    _fldrecv2.out = _fldval3;
-  }
-  function pushByte(e, b) {
-    let _fldrecv2 = e, _fldval3 = (e.acc * 256 | 0) + b | 0;
-    _fldrecv2.acc = _fldval3;
-    let _fldrecv4 = e, _fldval5 = e.n + 1 | 0;
-    if (_fldrecv4.n = _fldval5, e.n === 3) {
-      b64char(e, e.acc / 262144 | 0), b64char(e, (e.acc / 4096 | 0) % 64), b64char(e, (e.acc / 64 | 0) % 64), b64char(e, e.acc % 64);
-      let _fldrecv6 = e, _fldval7 = 0;
-      _fldrecv6.acc = _fldval7;
-      let _fldrecv8 = e, _fldval9 = 0;
-      _fldrecv8.n = _fldval9;
+}
+
+function iabs(v) {
+    if ((v < 0)) {
+        return (-v);
+    } else {
+        return v;
     }
-  }
-  function finishB64(e) {
-    if (e.n === 1) {
-      let _scopedVar$v = e.acc * 65536 | 0;
-      b64char(e, _scopedVar$v / 262144 | 0), b64char(e, (_scopedVar$v / 4096 | 0) % 64);
-      let _fldrecv2 = e, _fldval3 = String(e.out) + "==";
-      _fldrecv2.out = _fldval3;
-    } else if (e.n === 2) {
-      let _scopedVar$v_1 = e.acc * 256 | 0;
-      b64char(e, _scopedVar$v_1 / 262144 | 0), b64char(e, (_scopedVar$v_1 / 4096 | 0) % 64), b64char(e, (_scopedVar$v_1 / 64 | 0) % 64);
-      let _fldrecv5 = e, _fldval6 = String(e.out) + "=";
-      _fldrecv5.out = _fldval6;
+}
+
+function imin(p, q) {
+    if ((p < q)) {
+        return p;
+    } else {
+        return q;
     }
-    let _fldrecv7 = e, _fldval8 = 0;
-    _fldrecv7.acc = _fldval8;
-    let _fldrecv9 = e, _fldval10 = 0;
-    _fldrecv9.n = _fldval10;
-  }
-  function push16(e, v) {
-    pushByte(e, v % 256), pushByte(e, (v / 256 | 0) % 256);
-  }
-  function push32(e, v) {
-    push16(e, v % 65536), push16(e, v / 65536 | 0);
-  }
-  function pushTag(e, a, b, c, d) {
-    pushByte(e, a), pushByte(e, b), pushByte(e, c), pushByte(e, d);
-  }
-  function synth(s, f0, f1, ms, mix, hold, vol, env) {
-    let n = (K.RATE * ms | 0) / 1e3 | 0, e = new Enc();
-    pushTag(e, 82, 73, 70, 70), push32(e, 36 + n | 0), pushTag(e, 87, 65, 86, 69), pushTag(e, 102, 109, 116, 32), push32(e, 16), push16(e, 1), push16(e, 1), push32(e, K.RATE), push32(e, K.RATE), push16(e, 1), push16(e, 8), pushTag(e, 100, 97, 116, 97), push32(e, n);
-    let phase = 0, nz = 1, _forInitVar = 0;
-    for (; _forInitVar < n; _forInitVar = _forInitVar + 1 | 0) {
-      let _scopedVar$f = f0 + (((f1 - f0 | 0) * _forInitVar | 0) / n | 0) | 0;
-      phase = (phase + ((_scopedVar$f * 65536 | 0) / K.RATE | 0) | 0) % 65536;
-      let _scopedVar$sq = 1;
-      if (phase >= 32768 && (_scopedVar$sq = -1), !(_forInitVar % hold)) {
-        let _fldrecv15 = s, _fldval16 = ((s.noise * 75 | 0) + 74 | 0) % 65537;
-        _fldrecv15.noise = _fldval16, s.noise % 2 ? nz = -1 : nz = 1;
-      }
-      let _scopedVar$d = ((n - _forInitVar | 0) * 100 | 0) / n | 0, _scopedVar$en = _scopedVar$d;
-      env === 1 ? _forInitVar < (n / 2 | 0) ? _scopedVar$en = (_forInitVar * 200 | 0) / n | 0 : _scopedVar$en = _scopedVar$d * 2 | 0 : env === 2 && (_scopedVar$en = (_scopedVar$d * _scopedVar$d | 0) / 100 | 0), _scopedVar$en = imin(_scopedVar$en, ((_forInitVar * 100 | 0) / 40 | 0) + 1 | 0);
-      let _scopedVar$amp = (vol * _scopedVar$en | 0) / 100 | 0, _scopedVar$v = (((_scopedVar$sq * (100 - mix | 0) | 0) + (nz * mix | 0) | 0) * _scopedVar$amp | 0) / 100 | 0;
-      pushByte(e, clampi(128 + _scopedVar$v | 0, 1, 255));
+}
+
+function imax(p, q) {
+    if ((p > q)) {
+        return p;
+    } else {
+        return q;
     }
-    return finishB64(e), "data:audio/wav;base64," + String(e.out);
-  }
-  function buildSounds(s) {
-    kofListAdd(s.uris, synth(s, 170, 80, 70, 70, 2, 90, 0)), kofListAdd(s.uris, synth(s, 110, 50, 110, 60, 4, 100, 0)), kofListAdd(s.uris, synth(s, 150, 45, 170, 55, 3, 110, 0)), kofListAdd(s.uris, synth(s, 220, 35, 450, 70, 5, 120, 0)), kofListAdd(s.uris, synth(s, 950, 700, 45, 25, 1, 55, 0)), kofListAdd(s.uris, synth(s, 400, 400, 90, 100, 1, 22, 1)), kofListAdd(s.uris, synth(s, 988, 988, 1100, 5, 1, 80, 2)), kofListAdd(s.uris, synth(s, 660, 660, 90, 0, 1, 60, 0)), kofListAdd(s.uris, synth(s, 420, 70, 650, 20, 2, 90, 0)), kofListAdd(s.uris, synth(s, 300, 300, 1500, 100, 3, 55, 1)), kofListAdd(s.uris, synth(s, 1200, 1200, 40, 0, 1, 45, 0)), kofListAdd(s.uris, synth(s, 250, 900, 260, 0, 1, 60, 0)), kofListAdd(s.uris, synth(s, 220, 140, 130, 10, 1, 50, 0));
-  }
-  function sfx(g, id) {
+}
+
+function clampi(v, lo, hi) {
+    if ((v < lo)) {
+        return lo;
+    } else {
+        if ((v > hi)) {
+            return hi;
+        } else {
+            return v;
+        }
+    }
+}
+
+function rnd(g, n) {
+    let _fldrecv2 = g;
+    let _fldval3 = (((((g.seed * 75) | 0) + 74) | 0) % 65537);
+    (_fldrecv2.seed = _fldval3);
+    if ((n <= 0)) {
+        return 0;
+    } else {
+        return (g.seed % n);
+    }
+}
+
+function b64char(e, v) {
+    let _fldrecv2 = e;
+    let _fldval3 = (String(e.out) + String(K.B64.substring(v, ((v + 1) | 0))));
+    (_fldrecv2.out = _fldval3);
+    return;
+}
+
+function pushByte(e, b) {
+    let _fldrecv2 = e;
+    let _fldval3 = ((((e.acc * 256) | 0) + b) | 0);
+    (_fldrecv2.acc = _fldval3);
+    let _fldrecv4 = e;
+    let _fldval5 = ((e.n + 1) | 0);
+    (_fldrecv4.n = _fldval5);
+    if ((e.n === 3)) {
+        b64char(e, ((e.acc / 262144) | 0));
+        b64char(e, (((e.acc / 4096) | 0) % 64));
+        b64char(e, (((e.acc / 64) | 0) % 64));
+        b64char(e, (e.acc % 64));
+        let _fldrecv6 = e;
+        let _fldval7 = 0;
+        (_fldrecv6.acc = _fldval7);
+        let _fldrecv8 = e;
+        let _fldval9 = 0;
+        (_fldrecv8.n = _fldval9);
+    }
+    return;
+}
+
+function finishB64(e) {
+    if ((e.n === 1)) {
+        let _scopedVar$v = ((e.acc * 65536) | 0);
+        b64char(e, ((_scopedVar$v / 262144) | 0));
+        b64char(e, (((_scopedVar$v / 4096) | 0) % 64));
+        let _fldrecv2 = e;
+        let _fldval3 = (String(e.out) + String("=="));
+        (_fldrecv2.out = _fldval3);
+    } else {
+        if ((e.n === 2)) {
+            let _scopedVar$v_1 = ((e.acc * 256) | 0);
+            b64char(e, ((_scopedVar$v_1 / 262144) | 0));
+            b64char(e, (((_scopedVar$v_1 / 4096) | 0) % 64));
+            b64char(e, (((_scopedVar$v_1 / 64) | 0) % 64));
+            let _fldrecv5 = e;
+            let _fldval6 = (String(e.out) + String("="));
+            (_fldrecv5.out = _fldval6);
+        }
+    }
+    let _fldrecv7 = e;
+    let _fldval8 = 0;
+    (_fldrecv7.acc = _fldval8);
+    let _fldrecv9 = e;
+    let _fldval10 = 0;
+    (_fldrecv9.n = _fldval10);
+    return;
+}
+
+function push16(e, v) {
+    pushByte(e, (v % 256));
+    pushByte(e, (((v / 256) | 0) % 256));
+    return;
+}
+
+function push32(e, v) {
+    push16(e, (v % 65536));
+    push16(e, ((v / 65536) | 0));
+    return;
+}
+
+function pushTag(e, a, b, c, d) {
+    pushByte(e, a);
+    pushByte(e, b);
+    pushByte(e, c);
+    pushByte(e, d);
+    return;
+}
+
+function synth(s, f0, f1, ms, mix, hold, vol, env) {
+    let n = ((((K.RATE * ms) | 0) / 1000) | 0);
+    let e = new Enc();
+    pushTag(e, 82, 73, 70, 70);
+    push32(e, ((36 + n) | 0));
+    pushTag(e, 87, 65, 86, 69);
+    pushTag(e, 102, 109, 116, 32);
+    push32(e, 16);
+    push16(e, 1);
+    push16(e, 1);
+    push32(e, K.RATE);
+    push32(e, K.RATE);
+    push16(e, 1);
+    push16(e, 8);
+    pushTag(e, 100, 97, 116, 97);
+    push32(e, n);
+    let phase = 0;
+    let nz = 1;
+    let _forInitVar = 0;
+    for (; (_forInitVar < n); _forInitVar = ((_forInitVar + 1) | 0)) {
+        let _scopedVar$f = ((f0 + ((((((f1 - f0) | 0) * _forInitVar) | 0) / n) | 0)) | 0);
+        phase = (((phase + ((((_scopedVar$f * 65536) | 0) / K.RATE) | 0)) | 0) % 65536);
+        let _scopedVar$sq = 1;
+        if ((phase >= 32768)) {
+            _scopedVar$sq = -1;
+        }
+        if ((!(_forInitVar % hold))) {
+            let _fldrecv15 = s;
+            let _fldval16 = (((((s.noise * 75) | 0) + 74) | 0) % 65537);
+            (_fldrecv15.noise = _fldval16);
+            if ((!(s.noise % 2))) {
+                nz = 1;
+            } else {
+                nz = -1;
+            }
+        }
+        let _scopedVar$d = ((((((n - _forInitVar) | 0) * 100) | 0) / n) | 0);
+        let _scopedVar$en = _scopedVar$d;
+        if ((env === 1)) {
+            if ((_forInitVar < ((n / 2) | 0))) {
+                _scopedVar$en = ((((_forInitVar * 200) | 0) / n) | 0);
+            } else {
+                _scopedVar$en = ((_scopedVar$d * 2) | 0);
+            }
+        } else {
+            if ((env === 2)) {
+                _scopedVar$en = ((((_scopedVar$d * _scopedVar$d) | 0) / 100) | 0);
+            }
+        }
+        _scopedVar$en = imin(_scopedVar$en, ((((((_forInitVar * 100) | 0) / 40) | 0) + 1) | 0));
+        let _scopedVar$amp = ((((vol * _scopedVar$en) | 0) / 100) | 0);
+        let _scopedVar$v = ((((((((_scopedVar$sq * ((100 - mix) | 0)) | 0) + ((nz * mix) | 0)) | 0) * _scopedVar$amp) | 0) / 100) | 0);
+        pushByte(e, clampi(((128 + _scopedVar$v) | 0), 1, 255));
+    }
+    finishB64(e);
+    return (String("data:audio/wav;base64,") + String(e.out));
+}
+
+function buildSounds(s) {
+    kofListAdd(s.uris, synth(s, 170, 80, 70, 70, 2, 90, 0));
+    kofListAdd(s.uris, synth(s, 110, 50, 110, 60, 4, 100, 0));
+    kofListAdd(s.uris, synth(s, 150, 45, 170, 55, 3, 110, 0));
+    kofListAdd(s.uris, synth(s, 220, 35, 450, 70, 5, 120, 0));
+    kofListAdd(s.uris, synth(s, 950, 700, 45, 25, 1, 55, 0));
+    kofListAdd(s.uris, synth(s, 400, 400, 90, 100, 1, 22, 1));
+    kofListAdd(s.uris, synth(s, 988, 988, 1100, 5, 1, 80, 2));
+    kofListAdd(s.uris, synth(s, 660, 660, 90, 0, 1, 60, 0));
+    kofListAdd(s.uris, synth(s, 420, 70, 650, 20, 2, 90, 0));
+    kofListAdd(s.uris, synth(s, 300, 300, 1500, 100, 3, 55, 1));
+    kofListAdd(s.uris, synth(s, 1200, 1200, 40, 0, 1, 45, 0));
+    kofListAdd(s.uris, synth(s, 250, 900, 260, 0, 1, 60, 0));
+    kofListAdd(s.uris, synth(s, 220, 140, 130, 10, 1, 50, 0));
+    return;
+}
+
+function sfx(g, id) {
     let s = g.sfx;
-    if (!!s.on)
-      if (s.q1 < 0) {
-        let _fldrecv3 = s, _fldval4 = id;
-        _fldrecv3.q1 = _fldval4;
-      } else if (s.q2 < 0) {
-        let _fldrecv5 = s, _fldval6 = id;
-        _fldrecv5.q2 = _fldval6;
-      } else {
-        let _fldrecv7 = s, _fldval8 = id;
-        _fldrecv7.q3 = _fldval8;
-      }
-  }
-  function fire(a, u) {
-    kofUiAudioSetSrc(a, u), kofUiAudioPlay(a);
-  }
-  function drainSfx(g, c1, c2, c3) {
-    let s = g.sfx, _forInitVar = 0;
-    for (; _forInitVar < 3; _forInitVar = _forInitVar + 1 | 0) {
-      let _scopedVar$id = s.q1;
-      if (_forInitVar === 1 && (_scopedVar$id = s.q2), _forInitVar === 2 && (_scopedVar$id = s.q3), _scopedVar$id >= 0) {
-        let _scopedVar$u = kofListGet(s.uris, _scopedVar$id);
-        s.rr ? s.rr === 1 ? fire(c2, _scopedVar$u) : fire(c3, _scopedVar$u) : fire(c1, _scopedVar$u);
-        let _fldrecv8 = s, _fldval9 = (s.rr + 1 | 0) % 3;
-        _fldrecv8.rr = _fldval9;
-      }
+    if ((s.on ? 0 : 1)) {
+        return;
+    } else {
+        if ((s.q1 < 0)) {
+            let _fldrecv3 = s;
+            let _fldval4 = id;
+            (_fldrecv3.q1 = _fldval4);
+        } else {
+            if ((s.q2 < 0)) {
+                let _fldrecv5 = s;
+                let _fldval6 = id;
+                (_fldrecv5.q2 = _fldval6);
+            } else {
+                let _fldrecv7 = s;
+                let _fldval8 = id;
+                (_fldrecv7.q3 = _fldval8);
+            }
+        }
     }
-    let _fldrecv10 = s, _fldval11 = -1;
-    _fldrecv10.q1 = _fldval11;
-    let _fldrecv12 = s, _fldval13 = -1;
-    _fldrecv12.q2 = _fldval13;
-    let _fldrecv14 = s, _fldval15 = -1;
-    _fldrecv14.q3 = _fldval15;
-  }
-  function boxerName(k) {
-    return k ? k === 1 ? "ZE MARRETA" : k === 2 ? "TANQUE TAVARES" : "CANHOTO SILVA" : "KID RELAMPAGO";
-  }
-  function boxerNick(k) {
-    return k ? k === 1 ? "PANCADA PESADA - LENTO" : k === 2 ? "AGUENTA TUDO - COSTELA FRACA" : "EQUILIBRADO - FIGADO SENSIVEL" : "RAPIDO - QUEIXO DE VIDRO";
-  }
-  function statPow(k) {
-    return k ? k === 1 ? 3 : 2 : 1;
-  }
-  function statSpd(k) {
-    return k ? k === 1 || k === 2 ? 1 : 2 : 3;
-  }
-  function statChin(k) {
-    return k ? k === 1 ? 2 : k === 2 ? 3 : 2 : 1;
-  }
-  function statWeak(k) {
-    return k ? k === 1 ? 0 : 1 : 0;
-  }
-  function trunkColor(k) {
-    return k ? k === 1 ? -769120001 : k === 2 ? 683563775 : 1013901055 : -255317761;
-  }
-  function skinColor(k) {
-    return k ? k === 1 ? -1772143361 : k === 2 ? -929995521 : 1850093055 : -424375041;
-  }
-  function hairColor(k) {
-    return k ? k === 1 ? 504631295 : k === 2 ? 1513232895 : 336530175 : -86222081;
-  }
-  function gloveColor(k) {
-    return k === 3 ? -84215041 : k === 1 ? 505290495 : -938205441;
-  }
-  function windup(act) {
-    return act === K.JAB ? 3 : act === K.BODY ? 5 : act === K.HOOK ? 8 : 7;
-  }
-  function actLen(act) {
-    return act === K.JAB ? 10 : act === K.BODY ? 15 : act === K.HOOK ? 24 : 26;
-  }
-  function reach(act) {
-    return act === K.JAB ? 74 : act === K.BODY ? 62 : 66;
-  }
-  function baseDmg(act) {
-    return act === K.JAB ? 45 : act === K.BODY ? 65 : act === K.HOOK ? 105 : 230;
-  }
-  function staCost(act) {
-    return act === K.JAB ? 18 : act === K.BODY ? 34 : act === K.HOOK ? 60 : 90;
-  }
-  function punchPts(act) {
-    return act === K.JAB ? 1 : act === K.BODY ? 2 : act === K.HOOK ? 3 : 5;
-  }
-  function rect(c, x, y, w, h, col) {
-    kofUiCanvasSetFill(c, col), kofUiCanvasBeginPath(c), kofUiCanvasMoveTo(c, x, y), kofUiCanvasLineTo(c, x + w | 0, y), kofUiCanvasLineTo(c, x + w | 0, y + h | 0), kofUiCanvasLineTo(c, x, y + h | 0), kofUiCanvasClosePath(c), kofUiCanvasFill(c);
-  }
-  function quad(c, x1, y1, x2, y2, x3, y3, x4, y4, col) {
-    kofUiCanvasSetFill(c, col), kofUiCanvasBeginPath(c), kofUiCanvasMoveTo(c, x1, y1), kofUiCanvasLineTo(c, x2, y2), kofUiCanvasLineTo(c, x3, y3), kofUiCanvasLineTo(c, x4, y4), kofUiCanvasClosePath(c), kofUiCanvasFill(c);
-  }
-  function textW(s, sc) {
-    return ((s.length * 4 | 0) * sc | 0) - sc | 0;
-  }
-  function text(c, s, x, y, sc, col) {
-    kofUiCanvasSetFill(c, col), kofUiCanvasBeginPath(c);
-    let n = s.length, _forInitVar = 0;
-    for (; _forInitVar < n; _forInitVar = _forInitVar + 1 | 0) {
-      let _scopedVar$ch = s.substring(_forInitVar, _forInitVar + 1 | 0), _scopedVar$gi = K.FCH.indexOf(_scopedVar$ch);
-      if (_scopedVar$gi > 0 | (_scopedVar$ch === "0" ? 1 : 0)) {
-        let _scopedVar$base = _scopedVar$gi * 15 | 0, _forInitVar_1 = 0;
-        for (; _forInitVar_1 < 15; _forInitVar_1 = _forInitVar_1 + 1 | 0)
-          if (K.FBITS.substring(_scopedVar$base + _forInitVar_1 | 0, (_scopedVar$base + _forInitVar_1 | 0) + 1 | 0) === "1" || !1) {
-            let _scopedVar$px = x + (((_forInitVar * 4 | 0) + _forInitVar_1 % 3 | 0) * sc | 0) | 0, _scopedVar$py = y + ((_forInitVar_1 / 3 | 0) * sc | 0) | 0;
-            kofUiCanvasMoveTo(c, _scopedVar$px, _scopedVar$py), kofUiCanvasLineTo(c, _scopedVar$px + sc | 0, _scopedVar$py), kofUiCanvasLineTo(c, _scopedVar$px + sc | 0, _scopedVar$py + sc | 0), kofUiCanvasLineTo(c, _scopedVar$px, _scopedVar$py + sc | 0), kofUiCanvasClosePath(c);
-          }
-      }
+    return;
+}
+
+function fire(a, u) {
+    kofUiAudioSetSrc(a, u);
+    kofUiAudioPlay(a);
+    return;
+}
+
+function drainSfx(g, c1, c2, c3) {
+    let s = g.sfx;
+    let _forInitVar = 0;
+    for (; (_forInitVar < 3); _forInitVar = ((_forInitVar + 1) | 0)) {
+        let _scopedVar$id = s.q1;
+        if ((_forInitVar === 1)) {
+            _scopedVar$id = s.q2;
+        }
+        if ((_forInitVar === 2)) {
+            _scopedVar$id = s.q3;
+        }
+        if ((_scopedVar$id >= 0)) {
+            let _scopedVar$u = kofListGet(s.uris, _scopedVar$id);
+            if ((!s.rr)) {
+                fire(c1, _scopedVar$u);
+            } else {
+                if ((s.rr === 1)) {
+                    fire(c2, _scopedVar$u);
+                } else {
+                    fire(c3, _scopedVar$u);
+                }
+            }
+            let _fldrecv8 = s;
+            let _fldval9 = (((s.rr + 1) | 0) % 3);
+            (_fldrecv8.rr = _fldval9);
+        }
+    }
+    let _fldrecv10 = s;
+    let _fldval11 = -1;
+    (_fldrecv10.q1 = _fldval11);
+    let _fldrecv12 = s;
+    let _fldval13 = -1;
+    (_fldrecv12.q2 = _fldval13);
+    let _fldrecv14 = s;
+    let _fldval15 = -1;
+    (_fldrecv14.q3 = _fldval15);
+    return;
+}
+
+function boxerName(k) {
+    if ((!k)) {
+        return "KID RELAMPAGO";
+    } else {
+        if ((k === 1)) {
+            return "ZE MARRETA";
+        } else {
+            if ((k === 2)) {
+                return "TANQUE TAVARES";
+            } else {
+                return "CANHOTO SILVA";
+            }
+        }
+    }
+}
+
+function boxerNick(k) {
+    if ((!k)) {
+        return "RAPIDO - QUEIXO DE VIDRO";
+    } else {
+        if ((k === 1)) {
+            return "PANCADA PESADA - LENTO";
+        } else {
+            if ((k === 2)) {
+                return "AGUENTA TUDO - COSTELA FRACA";
+            } else {
+                return "EQUILIBRADO - FIGADO SENSIVEL";
+            }
+        }
+    }
+}
+
+function statPow(k) {
+    if ((!k)) {
+        return 1;
+    } else {
+        if ((k === 1)) {
+            return 3;
+        } else {
+            if ((k === 2)) {
+                return 2;
+            } else {
+                return 2;
+            }
+        }
+    }
+}
+
+function statSpd(k) {
+    if ((!k)) {
+        return 3;
+    } else {
+        if ((k === 1)) {
+            return 1;
+        } else {
+            if ((k === 2)) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    }
+}
+
+function statChin(k) {
+    if ((!k)) {
+        return 1;
+    } else {
+        if ((k === 1)) {
+            return 2;
+        } else {
+            if ((k === 2)) {
+                return 3;
+            } else {
+                return 2;
+            }
+        }
+    }
+}
+
+function statWeak(k) {
+    if ((!k)) {
+        return 0;
+    } else {
+        if ((k === 1)) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+}
+
+function trunkColor(k) {
+    if ((!k)) {
+        return -255317761;
+    } else {
+        if ((k === 1)) {
+            return -769120001;
+        } else {
+            if ((k === 2)) {
+                return 683563775;
+            } else {
+                return 1013901055;
+            }
+        }
+    }
+}
+
+function skinColor(k) {
+    if ((!k)) {
+        return -424375041;
+    } else {
+        if ((k === 1)) {
+            return -1772143361;
+        } else {
+            if ((k === 2)) {
+                return -929995521;
+            } else {
+                return 1850093055;
+            }
+        }
+    }
+}
+
+function hairColor(k) {
+    if ((!k)) {
+        return -86222081;
+    } else {
+        if ((k === 1)) {
+            return 504631295;
+        } else {
+            if ((k === 2)) {
+                return 1513232895;
+            } else {
+                return 336530175;
+            }
+        }
+    }
+}
+
+function gloveColor(k) {
+    if ((k === 3)) {
+        return -84215041;
+    } else {
+        if ((k === 1)) {
+            return 505290495;
+        } else {
+            return -938205441;
+        }
+    }
+}
+
+function windup(act) {
+    if ((act === K.JAB)) {
+        return 3;
+    } else {
+        if ((act === K.BODY)) {
+            return 5;
+        } else {
+            if ((act === K.HOOK)) {
+                return 8;
+            } else {
+                return 7;
+            }
+        }
+    }
+}
+
+function actLen(act) {
+    if ((act === K.JAB)) {
+        return 10;
+    } else {
+        if ((act === K.BODY)) {
+            return 15;
+        } else {
+            if ((act === K.HOOK)) {
+                return 24;
+            } else {
+                return 26;
+            }
+        }
+    }
+}
+
+function reach(act) {
+    if ((act === K.JAB)) {
+        return 74;
+    } else {
+        if ((act === K.BODY)) {
+            return 62;
+        } else {
+            return 66;
+        }
+    }
+}
+
+function baseDmg(act) {
+    if ((act === K.JAB)) {
+        return 45;
+    } else {
+        if ((act === K.BODY)) {
+            return 65;
+        } else {
+            if ((act === K.HOOK)) {
+                return 105;
+            } else {
+                return 230;
+            }
+        }
+    }
+}
+
+function staCost(act) {
+    if ((act === K.JAB)) {
+        return 18;
+    } else {
+        if ((act === K.BODY)) {
+            return 34;
+        } else {
+            if ((act === K.HOOK)) {
+                return 60;
+            } else {
+                return 90;
+            }
+        }
+    }
+}
+
+function punchPts(act) {
+    if ((act === K.JAB)) {
+        return 1;
+    } else {
+        if ((act === K.BODY)) {
+            return 2;
+        } else {
+            if ((act === K.HOOK)) {
+                return 3;
+            } else {
+                return 5;
+            }
+        }
+    }
+}
+
+function rect(c, x, y, w, h, col) {
+    kofUiCanvasSetFill(c, col);
+    kofUiCanvasBeginPath(c);
+    kofUiCanvasMoveTo(c, x, y);
+    kofUiCanvasLineTo(c, ((x + w) | 0), y);
+    kofUiCanvasLineTo(c, ((x + w) | 0), ((y + h) | 0));
+    kofUiCanvasLineTo(c, x, ((y + h) | 0));
+    kofUiCanvasClosePath(c);
+    kofUiCanvasFill(c);
+    return;
+}
+
+function quad(c, x1, y1, x2, y2, x3, y3, x4, y4, col) {
+    kofUiCanvasSetFill(c, col);
+    kofUiCanvasBeginPath(c);
+    kofUiCanvasMoveTo(c, x1, y1);
+    kofUiCanvasLineTo(c, x2, y2);
+    kofUiCanvasLineTo(c, x3, y3);
+    kofUiCanvasLineTo(c, x4, y4);
+    kofUiCanvasClosePath(c);
+    kofUiCanvasFill(c);
+    return;
+}
+
+function textW(s, sc) {
+    return ((((((s.length * 4) | 0) * sc) | 0) - sc) | 0);
+}
+
+function text(c, s, x, y, sc, col) {
+    kofUiCanvasSetFill(c, col);
+    kofUiCanvasBeginPath(c);
+    let n = s.length;
+    let _forInitVar = 0;
+    for (; (_forInitVar < n); _forInitVar = ((_forInitVar + 1) | 0)) {
+        let _scopedVar$ch = s.substring(_forInitVar, ((_forInitVar + 1) | 0));
+        let _scopedVar$gi = K.FCH.indexOf(_scopedVar$ch);
+        if (((_scopedVar$gi > 0) | ((_scopedVar$ch === "0") ? 1 : 0))) {
+            let _scopedVar$base = ((_scopedVar$gi * 15) | 0);
+            let _forInitVar_1 = 0;
+            for (; (_forInitVar_1 < 15); _forInitVar_1 = ((_forInitVar_1 + 1) | 0)) {
+                if (((K.FBITS.substring(((_scopedVar$base + _forInitVar_1) | 0), ((((_scopedVar$base + _forInitVar_1) | 0) + 1) | 0)) === "1") ? 1 : 0)) {
+                    let _scopedVar$px = ((x + ((((((_forInitVar * 4) | 0) + (_forInitVar_1 % 3)) | 0) * sc) | 0)) | 0);
+                    let _scopedVar$py = ((y + ((((_forInitVar_1 / 3) | 0) * sc) | 0)) | 0);
+                    kofUiCanvasMoveTo(c, _scopedVar$px, _scopedVar$py);
+                    kofUiCanvasLineTo(c, ((_scopedVar$px + sc) | 0), _scopedVar$py);
+                    kofUiCanvasLineTo(c, ((_scopedVar$px + sc) | 0), ((_scopedVar$py + sc) | 0));
+                    kofUiCanvasLineTo(c, _scopedVar$px, ((_scopedVar$py + sc) | 0));
+                    kofUiCanvasClosePath(c);
+                }
+            }
+        }
     }
     kofUiCanvasFill(c);
-  }
-  function textC(c, s, cx, y, sc, col) {
-    text(c, s, cx - (textW(s, sc) / 2 | 0) | 0, y, sc, col);
-  }
-  function textShadow(c, s, cx, y, sc, col) {
-    textC(c, s, cx + sc | 0, y + sc | 0, sc, 255), textC(c, s, cx, y, sc, col);
-  }
-  function two(v) {
-    return v < 10 ? "0" + String(v) : "" + String(v);
-  }
-  function floorY(z) {
-    return 178 + ((z * 17 | 0) / 10 | 0) | 0;
-  }
-  function drawRing(c, g) {
+    return;
+}
+
+function textC(c, s, cx, y, sc, col) {
+    text(c, s, ((cx - ((textW(s, sc) / 2) | 0)) | 0), y, sc, col);
+    return;
+}
+
+function textShadow(c, s, cx, y, sc, col) {
+    textC(c, s, ((cx + sc) | 0), ((y + sc) | 0), sc, 255);
+    textC(c, s, cx, y, sc, col);
+    return;
+}
+
+function two(v) {
+    if ((v < 10)) {
+        return (String("0") + String(v));
+    } else {
+        return (String("") + String(v));
+    }
+}
+
+function floorY(z) {
+    return ((178 + ((((z * 17) | 0) / 10) | 0)) | 0);
+}
+
+function drawRing(c, g) {
     rect(c, 0, 52, K.W, 110, 302917887);
     let _forInitVar = 0;
-    for (; _forInitVar < 40; _forInitVar = _forInitVar + 1 | 0) {
-      let _scopedVar$cx = ((_forInitVar * 53 | 0) + 17 | 0) % K.W, _scopedVar$cy = 66 + (_forInitVar * 29 | 0) % 60 | 0, _scopedVar$tone = 50 + (_forInitVar * 37 | 0) % 60 | 0;
-      rect(c, _scopedVar$cx, _scopedVar$cy, 8, 10, (_scopedVar$tone | 0) << Number(BigInt.asIntN(32, BigInt(24))) | (_scopedVar$tone - 20 | 0 | 0) << Number(BigInt.asIntN(32, BigInt(16))) | (_scopedVar$tone + 30 | 0 | 0) << Number(BigInt.asIntN(32, BigInt(8))) | 255);
+    for (; (_forInitVar < 40); _forInitVar = ((_forInitVar + 1) | 0)) {
+        let _scopedVar$cx = (((((_forInitVar * 53) | 0) + 17) | 0) % K.W);
+        let _scopedVar$cy = ((66 + (((_forInitVar * 29) | 0) % 60)) | 0);
+        let _scopedVar$tone = ((50 + (((_forInitVar * 37) | 0) % 60)) | 0);
+        rect(c, _scopedVar$cx, _scopedVar$cy, 8, 10, (((((_scopedVar$tone | 0) << Number(BigInt.asIntN(32, BigInt(24)))) | ((((_scopedVar$tone - 20) | 0) | 0) << Number(BigInt.asIntN(32, BigInt(16))))) | ((((_scopedVar$tone + 30) | 0) | 0) << Number(BigInt.asIntN(32, BigInt(8))))) | 255));
     }
-    if (g.state === K.FIGHT & g.frame % 23 === 0) {
-      let _scopedVar$fx = (g.frame * 97 | 0) % K.W;
-      rect(c, _scopedVar$fx, 70 + g.frame % 50 | 0, 6, 6, -8961);
+    if (((g.state === K.FIGHT) & ((g.frame % 23) === 0))) {
+        let _scopedVar$fx = (((g.frame * 97) | 0) % K.W);
+        rect(c, _scopedVar$fx, ((70 + (g.frame % 50)) | 0), 6, 6, -8961);
     }
-    quad(c, 92, 158, 548, 158, 628, 362, 12, 362, 643868927), quad(c, 120, 170, 520, 170, 590, 348, 50, 348, 880198911), textC(c, "KOF", 320, 245, 6, 1183635455), rect(c, 12, 362, 616, 30, -1777066241), textC(c, "RINGUE KOF 87", 320, 370, 3, -254652161), rect(c, 92, 110, 456, 3, -421075201), rect(c, 92, 126, 456, 3, -769120001), rect(c, 92, 142, 456, 3, -421075201), rect(c, 86, 100, 10, 60, -926362881), rect(c, 544, 100, 10, 60, -926362881);
-  }
-  function drawFrontRopes(c) {
-    rect(c, 4, 262, 14, 102, -757932801), rect(c, 622, 262, 14, 102, -757932801), rect(c, 4, 262, 14, 8, -600689921), rect(c, 622, 262, 14, 8, 1013901055), rect(c, 18, 290, 604, 3, -336860161), rect(c, 18, 312, 604, 3, -769120001), rect(c, 18, 334, 604, 3, -336860161);
-  }
-  function drawBoxer(c, g, p, isWinner) {
-    let k = p.kind, f = p.face, fx = p.x, fy = floorY(p.z), skin = skinColor(k), trunk = trunkColor(k), glove = gloveColor(k), hair = hairColor(k), shoe = 421076735;
-    if (rect(c, fx - 26 | 0, fy - 3 | 0, 52, 6, 373192959), p.str <= 0 & (g.state === K.DOWN | g.state === K.OVER)) {
-      let _scopedVar$d = -f;
-      rect(c, fx - 40 | 0, fy - 16 | 0, 80, 14, skin), rect(c, fx - 8 | 0, fy - 18 | 0, 22, 16, trunk), rect(c, (fx + (_scopedVar$d * 40 | 0) | 0) - 10 | 0, fy - 20 | 0, 20, 18, skin), rect(c, (fx + (_scopedVar$d * 40 | 0) | 0) - 10 | 0, fy - 22 | 0, 20, 6, hair), rect(c, (fx - (_scopedVar$d * 52 | 0) | 0) - 8 | 0, fy - 12 | 0, 16, 10, shoe), rect(c, (fx + (_scopedVar$d * 20 | 0) | 0) - 7 | 0, fy - 28 | 0, 14, 12, glove), rect(c, fx - 7 | 0, fy - 26 | 0, 14, 12, glove);
-      let _scopedVar$sx = fx + (_scopedVar$d * 40 | 0) | 0, _scopedVar$ph = (g.frame / 4 | 0) % 3;
-      rect(c, (_scopedVar$sx - 16 | 0) + (_scopedVar$ph * 10 | 0) | 0, fy - 40 | 0, 5, 5, -1027841), rect(c, (_scopedVar$sx + 12 | 0) - (_scopedVar$ph * 8 | 0) | 0, fy - 46 | 0, 5, 5, -1027841);
-      return;
+    quad(c, 92, 158, 548, 158, 628, 362, 12, 362, 643868927);
+    quad(c, 120, 170, 520, 170, 590, 348, 50, 348, 880198911);
+    textC(c, "KOF", 320, 245, 6, 1183635455);
+    rect(c, 12, 362, 616, 30, -1777066241);
+    textC(c, "RINGUE KOF 87", 320, 370, 3, -254652161);
+    rect(c, 92, 110, 456, 3, -421075201);
+    rect(c, 92, 126, 456, 3, -769120001);
+    rect(c, 92, 142, 456, 3, -421075201);
+    rect(c, 86, 100, 10, 60, -926362881);
+    rect(c, 544, 100, 10, 60, -926362881);
+    return;
+}
+
+function drawFrontRopes(c) {
+    rect(c, 4, 262, 14, 102, -757932801);
+    rect(c, 622, 262, 14, 102, -757932801);
+    rect(c, 4, 262, 14, 8, -600689921);
+    rect(c, 622, 262, 14, 8, 1013901055);
+    rect(c, 18, 290, 604, 3, -336860161);
+    rect(c, 18, 312, 604, 3, -769120001);
+    rect(c, 18, 334, 604, 3, -336860161);
+    return;
+}
+
+function drawBoxer(c, g, p, isWinner) {
+    let k = p.kind;
+    let f = p.face;
+    let fx = p.x;
+    let fy = floorY(p.z);
+    let skin = skinColor(k);
+    let trunk = trunkColor(k);
+    let glove = gloveColor(k);
+    let hair = hairColor(k);
+    let shoe = 421076735;
+    rect(c, ((fx - 26) | 0), ((fy - 3) | 0), 52, 6, 373192959);
+    if (((p.str <= 0) & ((g.state === K.DOWN) | (g.state === K.OVER)))) {
+        let _scopedVar$d = (-f);
+        rect(c, ((fx - 40) | 0), ((fy - 16) | 0), 80, 14, skin);
+        rect(c, ((fx - 8) | 0), ((fy - 18) | 0), 22, 16, trunk);
+        rect(c, ((((fx + ((_scopedVar$d * 40) | 0)) | 0) - 10) | 0), ((fy - 20) | 0), 20, 18, skin);
+        rect(c, ((((fx + ((_scopedVar$d * 40) | 0)) | 0) - 10) | 0), ((fy - 22) | 0), 20, 6, hair);
+        rect(c, ((((fx - ((_scopedVar$d * 52) | 0)) | 0) - 8) | 0), ((fy - 12) | 0), 16, 10, shoe);
+        rect(c, ((((fx + ((_scopedVar$d * 20) | 0)) | 0) - 7) | 0), ((fy - 28) | 0), 14, 12, glove);
+        rect(c, ((fx - 7) | 0), ((fy - 26) | 0), 14, 12, glove);
+        let _scopedVar$sx = ((fx + ((_scopedVar$d * 40) | 0)) | 0);
+        let _scopedVar$ph = (((g.frame / 4) | 0) % 3);
+        rect(c, ((((_scopedVar$sx - 16) | 0) + ((_scopedVar$ph * 10) | 0)) | 0), ((fy - 40) | 0), 5, 5, -1027841);
+        rect(c, ((((_scopedVar$sx + 12) | 0) - ((_scopedVar$ph * 8) | 0)) | 0), ((fy - 46) | 0), 5, 5, -1027841);
+        return;
     } else {
-      let lean = 0;
-      p.stun > 0 && (lean = -f * 5 | 0);
-      let bob = 0;
-      p.act === K.IDLE & (p.inG ? 0 : 1) && (bob = ((g.frame / 8 | 0) + k | 0) % 2);
-      let step = 0;
-      p.walk > 0 && (step = ((p.walk / 4 | 0) % 2 * 4 | 0) - 2 | 0), rect(c, ((fx - 15 | 0) - (f * 3 | 0) | 0) + step | 0, fy - 36 | 0, 11, 34, skin), rect(c, ((fx + 4 | 0) + (f * 3 | 0) | 0) - step | 0, fy - 36 | 0, 11, 34, skin), rect(c, ((fx - 18 | 0) - (f * 3 | 0) | 0) + step | 0, fy - 6 | 0, 15, 7, shoe), rect(c, ((fx + 3 | 0) + (f * 3 | 0) | 0) - step | 0, fy - 6 | 0, 15, 7, shoe), rect(c, fx - 19 | 0, (fy - 54 | 0) + bob | 0, 38, 22, trunk), rect(c, fx - 19 | 0, (fy - 54 | 0) + bob | 0, 38, 4, -84215041);
-      let tx = fx + lean | 0;
-      rect(c, tx - 17 | 0, (fy - 86 | 0) + bob | 0, 34, 34, skin);
-      let hx = tx + lean | 0, hy = (fy - 110 | 0) + bob | 0;
-      rect(c, hx - 11 | 0, hy, 22, 22, skin), rect(c, hx - 12 | 0, hy - 3 | 0, 24, 8, hair), rect(c, (hx + (f * 5 | 0) | 0) - 2 | 0, hy + 9 | 0, 4, 4, 336860415), p.flash > 0 && rect(c, hx - 11 | 0, hy, 22, 22, -1);
-      let frontX = tx + (f * 20 | 0) | 0, frontY = (fy - 92 | 0) + bob | 0, rearX = tx + (f * 6 | 0) | 0, rearY = (fy - 88 | 0) + bob | 0, armFront = 0, armRear = 0, wu = windup(p.act);
-      isWinner ? (frontX = tx + (f * 14 | 0) | 0, frontY = fy - 136 | 0, rearX = tx - (f * 14 | 0) | 0, rearY = fy - 136 | 0) : p.inG && p.act === K.IDLE ? (frontX = tx + (f * 13 | 0) | 0, frontY = (fy - 108 | 0) + bob | 0, rearX = tx + (f * 13 | 0) | 0, rearY = (fy - 94 | 0) + bob | 0) : p.act === K.JAB ? p.actT < wu ? frontX = tx + (f * 10 | 0) | 0 : p.actT < (wu + 3 | 0) ? (frontX = tx + (f * 62 | 0) | 0, frontY = fy - 96 | 0, armFront = 1) : frontX = tx + (f * 34 | 0) | 0 : p.act === K.BODY ? p.actT < wu ? (rearX = tx - (f * 4 | 0) | 0, rearY = fy - 72 | 0) : p.actT < (wu + 3 | 0) ? (rearX = tx + (f * 50 | 0) | 0, rearY = fy - 70 | 0, armRear = 1) : (rearX = tx + (f * 26 | 0) | 0, rearY = fy - 74 | 0) : p.act === K.HOOK | p.act === K.PAYOFF && (p.actT < wu ? (rearX = tx - (f * 14 | 0) | 0, rearY = fy - 84 | 0) : p.actT < (wu + 4 | 0) ? (rearX = tx + (f * 54 | 0) | 0, rearY = fy - 104 | 0, armRear = 1) : (rearX = tx + (f * 30 | 0) | 0, rearY = fy - 100 | 0)), armFront === 1 && rect(c, imin(tx, frontX), frontY + 3 | 0, iabs(frontX - tx | 0), 8, skin), armRear === 1 && rect(c, imin(tx, rearX), rearY + 3 | 0, iabs(rearX - tx | 0), 8, skin);
-      let gl = glove;
-      p.act === K.PAYOFF & (g.frame / 2 | 0) % 2 === 0 && (gl = -1688321), rect(c, rearX - 8 | 0, rearY - 1 | 0, 16, 14, gl), rect(c, frontX - 8 | 0, frontY - 1 | 0, 16, 14, glove), p.meter >= 100 & p.act === K.IDLE & (g.frame / 5 | 0) % 2 === 0 && rect(c, rearX - 10 | 0, rearY - 3 | 0, 20, 2, -1688321);
+        let lean = 0;
+        if ((p.stun > 0)) {
+            lean = (((-f) * 5) | 0);
+        }
+        let bob = 0;
+        if (((p.act === K.IDLE) & (p.inG ? 0 : 1))) {
+            bob = (((((g.frame / 8) | 0) + k) | 0) % 2);
+        }
+        let step = 0;
+        if ((p.walk > 0)) {
+            step = (((((((p.walk / 4) | 0) % 2) * 4) | 0) - 2) | 0);
+        }
+        rect(c, ((((((fx - 15) | 0) - ((f * 3) | 0)) | 0) + step) | 0), ((fy - 36) | 0), 11, 34, skin);
+        rect(c, ((((((fx + 4) | 0) + ((f * 3) | 0)) | 0) - step) | 0), ((fy - 36) | 0), 11, 34, skin);
+        rect(c, ((((((fx - 18) | 0) - ((f * 3) | 0)) | 0) + step) | 0), ((fy - 6) | 0), 15, 7, shoe);
+        rect(c, ((((((fx + 3) | 0) + ((f * 3) | 0)) | 0) - step) | 0), ((fy - 6) | 0), 15, 7, shoe);
+        rect(c, ((fx - 19) | 0), ((((fy - 54) | 0) + bob) | 0), 38, 22, trunk);
+        rect(c, ((fx - 19) | 0), ((((fy - 54) | 0) + bob) | 0), 38, 4, -84215041);
+        let tx = ((fx + lean) | 0);
+        rect(c, ((tx - 17) | 0), ((((fy - 86) | 0) + bob) | 0), 34, 34, skin);
+        let hx = ((tx + lean) | 0);
+        let hy = ((((fy - 110) | 0) + bob) | 0);
+        rect(c, ((hx - 11) | 0), hy, 22, 22, skin);
+        rect(c, ((hx - 12) | 0), ((hy - 3) | 0), 24, 8, hair);
+        rect(c, ((((hx + ((f * 5) | 0)) | 0) - 2) | 0), ((hy + 9) | 0), 4, 4, 336860415);
+        if ((p.flash > 0)) {
+            rect(c, ((hx - 11) | 0), hy, 22, 22, -1);
+        }
+        let frontX = ((tx + ((f * 20) | 0)) | 0);
+        let frontY = ((((fy - 92) | 0) + bob) | 0);
+        let rearX = ((tx + ((f * 6) | 0)) | 0);
+        let rearY = ((((fy - 88) | 0) + bob) | 0);
+        let armFront = 0;
+        let armRear = 0;
+        let wu = windup(p.act);
+        if (isWinner) {
+            frontX = ((tx + ((f * 14) | 0)) | 0);
+            frontY = ((fy - 136) | 0);
+            rearX = ((tx - ((f * 14) | 0)) | 0);
+            rearY = ((fy - 136) | 0);
+        } else {
+            if ((p.inG && (p.act === K.IDLE))) {
+                frontX = ((tx + ((f * 13) | 0)) | 0);
+                frontY = ((((fy - 108) | 0) + bob) | 0);
+                rearX = ((tx + ((f * 13) | 0)) | 0);
+                rearY = ((((fy - 94) | 0) + bob) | 0);
+            } else {
+                if ((p.act === K.JAB)) {
+                    if ((p.actT < wu)) {
+                        frontX = ((tx + ((f * 10) | 0)) | 0);
+                    } else {
+                        if ((p.actT < ((wu + 3) | 0))) {
+                            frontX = ((tx + ((f * 62) | 0)) | 0);
+                            frontY = ((fy - 96) | 0);
+                            armFront = 1;
+                        } else {
+                            frontX = ((tx + ((f * 34) | 0)) | 0);
+                        }
+                    }
+                } else {
+                    if ((p.act === K.BODY)) {
+                        if ((p.actT < wu)) {
+                            rearX = ((tx - ((f * 4) | 0)) | 0);
+                            rearY = ((fy - 72) | 0);
+                        } else {
+                            if ((p.actT < ((wu + 3) | 0))) {
+                                rearX = ((tx + ((f * 50) | 0)) | 0);
+                                rearY = ((fy - 70) | 0);
+                                armRear = 1;
+                            } else {
+                                rearX = ((tx + ((f * 26) | 0)) | 0);
+                                rearY = ((fy - 74) | 0);
+                            }
+                        }
+                    } else {
+                        if (((p.act === K.HOOK) | (p.act === K.PAYOFF))) {
+                            if ((p.actT < wu)) {
+                                rearX = ((tx - ((f * 14) | 0)) | 0);
+                                rearY = ((fy - 84) | 0);
+                            } else {
+                                if ((p.actT < ((wu + 4) | 0))) {
+                                    rearX = ((tx + ((f * 54) | 0)) | 0);
+                                    rearY = ((fy - 104) | 0);
+                                    armRear = 1;
+                                } else {
+                                    rearX = ((tx + ((f * 30) | 0)) | 0);
+                                    rearY = ((fy - 100) | 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if ((armFront === 1)) {
+            rect(c, imin(tx, frontX), ((frontY + 3) | 0), iabs(((frontX - tx) | 0)), 8, skin);
+        }
+        if ((armRear === 1)) {
+            rect(c, imin(tx, rearX), ((rearY + 3) | 0), iabs(((rearX - tx) | 0)), 8, skin);
+        }
+        let gl = glove;
+        if (((p.act === K.PAYOFF) & ((((g.frame / 2) | 0) % 2) === 0))) {
+            gl = -1688321;
+        }
+        rect(c, ((rearX - 8) | 0), ((rearY - 1) | 0), 16, 14, gl);
+        rect(c, ((frontX - 8) | 0), ((frontY - 1) | 0), 16, 14, glove);
+        if ((((p.meter >= 100) & (p.act === K.IDLE)) & ((((g.frame / 5) | 0) % 2) === 0))) {
+            rect(c, ((rearX - 10) | 0), ((rearY - 3) | 0), 20, 2, -1688321);
+        }
     }
-  }
-  function bar(c, x, y, w, h, v, vmax, col, rtl) {
-    rect(c, x - 2 | 0, y - 2 | 0, w + 4 | 0, h + 4 | 0, 255), rect(c, x, y, w, h, 1010583295);
-    let fw = (clampi(v, 0, vmax) * w | 0) / vmax | 0;
-    rtl ? rect(c, (x + w | 0) - fw | 0, y, fw, h, col) : rect(c, x, y, fw, h, col);
-  }
-  function drawHud(c, g) {
+    return;
+}
+
+function bar(c, x, y, w, h, v, vmax, col, rtl) {
+    rect(c, ((x - 2) | 0), ((y - 2) | 0), ((w + 4) | 0), ((h + 4) | 0), 255);
+    rect(c, x, y, w, h, 1010583295);
+    let fw = ((((clampi(v, 0, vmax) * w) | 0) / vmax) | 0);
+    if (rtl) {
+        rect(c, ((((x + w) | 0) - fw) | 0), y, fw, h, col);
+    } else {
+        rect(c, x, y, fw, h, col);
+    }
+    return;
+}
+
+function drawHud(c, g) {
     rect(c, 0, 0, K.W, 52, 168432895);
-    let a = g.a, b = g.b;
-    text(c, boxerName(a.kind), 10, 5, 2, trunkColor(a.kind)), bar(c, 10, 18, 220, 9, a.str, 1e3, -432262401, !1), bar(c, 10, 31, 220, 5, a.sta, 1e3, 1355968255, !1);
+    let a = g.a;
+    let b = g.b;
+    text(c, boxerName(a.kind), 10, 5, 2, trunkColor(a.kind));
+    bar(c, 10, 18, 220, 9, a.str, 1000, -432262401, false);
+    bar(c, 10, 31, 220, 5, a.sta, 1000, 1355968255, false);
     let m1 = 2021145855;
-    a.meter >= 100 & (g.frame / 4 | 0) % 2 === 0 && (m1 = -1027841), bar(c, 10, 41, 220, 4, a.meter, 100, m1, !1), text(c, two(a.pts), 238, 18, 3, -1);
+    if (((a.meter >= 100) & ((((g.frame / 4) | 0) % 2) === 0))) {
+        m1 = -1027841;
+    }
+    bar(c, 10, 41, 220, 4, a.meter, 100, m1, false);
+    text(c, two(a.pts), 238, 18, 3, -1);
     let n2 = boxerName(b.kind);
-    text(c, n2, (K.W - 10 | 0) - textW(n2, 2) | 0, 5, 2, trunkColor(b.kind)), bar(c, K.W - 230 | 0, 18, 220, 9, b.str, 1e3, -432262401, !0), bar(c, K.W - 230 | 0, 31, 220, 5, b.sta, 1e3, 1355968255, !0);
+    text(c, n2, ((((K.W - 10) | 0) - textW(n2, 2)) | 0), 5, 2, trunkColor(b.kind));
+    bar(c, ((K.W - 230) | 0), 18, 220, 9, b.str, 1000, -432262401, true);
+    bar(c, ((K.W - 230) | 0), 31, 220, 5, b.sta, 1000, 1355968255, true);
     let m2 = 2021145855;
-    b.meter >= 100 & (g.frame / 4 | 0) % 2 === 0 && (m2 = -1027841), bar(c, K.W - 230 | 0, 41, 220, 4, b.meter, 100, m2, !0), text(c, two(b.pts), (K.W - 238 | 0) - textW("00", 3) | 0, 18, 3, -1), textC(c, "ROUND " + String(g.round) + "/" + String(g.rounds), 320, 5, 2, -254652161);
-    let secs = (g.clock + 29 | 0) / 30 | 0, col = -1;
-    secs <= 10 & g.state === K.FIGHT && (col = -10858241), textC(c, String(secs / 60 | 0) + ":" + String(two(secs % 60)), 320, 20, 4, col);
-  }
-  function drawMenu(c, g) {
+    if (((b.meter >= 100) & ((((g.frame / 4) | 0) % 2) === 0))) {
+        m2 = -1027841;
+    }
+    bar(c, ((K.W - 230) | 0), 41, 220, 4, b.meter, 100, m2, true);
+    text(c, two(b.pts), ((((K.W - 238) | 0) - textW("00", 3)) | 0), 18, 3, -1);
+    textC(c, (String((String((String("ROUND ") + String(g.round))) + String("/"))) + String(g.rounds)), 320, 5, 2, -254652161);
+    let secs = ((((g.clock + 29) | 0) / 30) | 0);
+    let col = -1;
+    if (((secs <= 10) & (g.state === K.FIGHT))) {
+        col = -10858241;
+    }
+    textC(c, (String((String(((secs / 60) | 0)) + String(":"))) + String(two((secs % 60)))), 320, 20, 4, col);
+    return;
+}
+
+function drawMenu(c, g) {
     rect(c, 0, 0, K.W, K.H, 134617343);
     let _forInitVar = 0;
-    for (; _forInitVar < 6; _forInitVar = _forInitVar + 1 | 0)
-      rect(c, 0, 20 + (_forInitVar * 7 | 0) | 0, K.W, 3, (200 - (_forInitVar * 25 | 0) | 0 | 0) << Number(BigInt.asIntN(32, BigInt(24))) | (40 + (_forInitVar * 20 | 0) | 0 | 0) << Number(BigInt.asIntN(32, BigInt(16))) | 10240 | 255);
-    textShadow(c, "RINGUE KOF 87", 320, 70, 7, -86227201), textC(c, "UMA HOMENAGEM A REALSPORTS BOXING - ATARI 2600 - 1987", 320, 118, 2, -1599412481);
+    for (; (_forInitVar < 6); _forInitVar = ((_forInitVar + 1) | 0)) {
+        rect(c, 0, ((20 + ((_forInitVar * 7) | 0)) | 0), K.W, 3, (((((((200 - ((_forInitVar * 25) | 0)) | 0) | 0) << Number(BigInt.asIntN(32, BigInt(24)))) | ((((40 + ((_forInitVar * 20) | 0)) | 0) | 0) << Number(BigInt.asIntN(32, BigInt(16))))) | 10240) | 255));
+    }
+    textShadow(c, "RINGUE KOF 87", 320, 70, 7, -86227201);
+    textC(c, "UMA HOMENAGEM A REALSPORTS BOXING - ATARI 2600 - 1987", 320, 118, 2, -1599412481);
     let y = 150;
-    rect(c, 40, y, 260, 120, 336868095), rect(c, 340, y, 260, 120, 336868095), textC(c, "P1", 170, y + 8 | 0, 3, -1);
+    rect(c, 40, y, 260, 120, 336868095);
+    rect(c, 340, y, 260, 120, 336868095);
+    textC(c, "P1", 170, ((y + 8) | 0), 3, -1);
     let who2 = "CPU";
-    g.mode === 2 && (who2 = "P2"), textC(c, who2, 470, y + 8 | 0, 3, -1), menuCard(c, g.sel1, 170, y + 34 | 0), menuCard(c, g.sel2, 470, y + 34 | 0);
+    if ((g.mode === 2)) {
+        who2 = "P2";
+    }
+    textC(c, who2, 470, ((y + 8) | 0), 3, -1);
+    menuCard(c, g.sel1, 170, ((y + 34) | 0));
+    menuCard(c, g.sel2, 470, ((y + 34) | 0));
     let modeTxt = "1 JOGADOR VS CPU";
-    g.mode === 2 && (modeTxt = "2 JOGADORES");
+    if ((g.mode === 2)) {
+        modeTxt = "2 JOGADORES";
+    }
     let dTxt = "NORMAL";
-    g.diff === 1 && (dTxt = "FACIL"), g.diff === 3 && (dTxt = "CAMPEAO");
+    if ((g.diff === 1)) {
+        dTxt = "FACIL";
+    }
+    if ((g.diff === 3)) {
+        dTxt = "CAMPEAO";
+    }
     let sTxt = "SOM ON";
-    !g.sfx.on && (sTxt = "SOM OFF"), textC(c, String(modeTxt) + " - " + String(g.rounds) + " ROUNDS - CPU: " + String(dTxt) + " - " + String(sTxt), 320, 280, 2, 2028377855), textC(c, "CODIGO: " + String(K.REPO), 320, 296, 2, -1947599361), (g.frame / 15 | 0) % 2 || textShadow(c, "CLIQUE EM LUTAR! E USE O TECLADO", 320, 312, 3, -1), textC(c, "P1: WASD MOVE  F JAB  G CORPO  H GANCHO  R GUARDA", 320, 336, 2, -926365441), textC(c, "P2: SETAS  1 JAB  2 CORPO  3 GANCHO  0 GUARDA", 320, 352, 2, -926365441), textC(c, "BARRA AMARELA CHEIA = GANCHO VIRA PAYOFF!   P = PAUSA", 320, 368, 2, -86227201), textC(c, "POWERED BY KOF - GITHUB.COM/KOFLANG", 320, 386, 2, 1852741375);
-  }
-  function menuCard(c, k, cx, y) {
-    textC(c, boxerName(k), cx, y, 2, trunkColor(k)), textC(c, boxerNick(k), cx, y + 14 | 0, 1, -926360321), statRow(c, "FORCA", statPow(k), cx - 90 | 0, y + 30 | 0), statRow(c, "VELOC", statSpd(k), cx - 90 | 0, y + 44 | 0), statRow(c, "QUEIXO", statChin(k), cx - 90 | 0, y + 58 | 0), rect(c, cx + 60 | 0, y + 36 | 0, 16, 16, skinColor(k)), rect(c, cx + 59 | 0, y + 33 | 0, 18, 6, hairColor(k)), rect(c, cx + 56 | 0, y + 52 | 0, 24, 16, skinColor(k)), rect(c, cx + 56 | 0, y + 66 | 0, 24, 10, trunkColor(k)), rect(c, cx + 78 | 0, y + 50 | 0, 10, 9, gloveColor(k)), rect(c, cx + 48 | 0, y + 54 | 0, 10, 9, gloveColor(k));
-  }
-  function statRow(c, label, v, x, y) {
+    if ((g.sfx.on ? 0 : 1)) {
+        sTxt = "SOM OFF";
+    }
+    textC(c, (String((String((String((String((String((String(modeTxt) + String(" - "))) + String(g.rounds))) + String(" ROUNDS - CPU: "))) + String(dTxt))) + String(" - "))) + String(sTxt)), 320, 280, 2, 2028377855);
+    textC(c, (String("CODIGO: ") + String(K.REPO)), 320, 296, 2, -1947599361);
+    if ((!(((g.frame / 15) | 0) % 2))) {
+        textShadow(c, "CLIQUE EM LUTAR! E USE O TECLADO", 320, 312, 3, -1);
+    }
+    textC(c, "P1: WASD MOVE  F JAB  G CORPO  H GANCHO  R GUARDA", 320, 336, 2, -926365441);
+    textC(c, "P2: SETAS  1 JAB  2 CORPO  3 GANCHO  0 GUARDA", 320, 352, 2, -926365441);
+    textC(c, "BARRA AMARELA CHEIA = GANCHO VIRA PAYOFF!   P = PAUSA", 320, 368, 2, -86227201);
+    textC(c, "POWERED BY KOF - GITHUB.COM/KOFLANG", 320, 386, 2, 1852741375);
+    return;
+}
+
+function menuCard(c, k, cx, y) {
+    textC(c, boxerName(k), cx, y, 2, trunkColor(k));
+    textC(c, boxerNick(k), cx, ((y + 14) | 0), 1, -926360321);
+    statRow(c, "FORCA", statPow(k), ((cx - 90) | 0), ((y + 30) | 0));
+    statRow(c, "VELOC", statSpd(k), ((cx - 90) | 0), ((y + 44) | 0));
+    statRow(c, "QUEIXO", statChin(k), ((cx - 90) | 0), ((y + 58) | 0));
+    rect(c, ((cx + 60) | 0), ((y + 36) | 0), 16, 16, skinColor(k));
+    rect(c, ((cx + 59) | 0), ((y + 33) | 0), 18, 6, hairColor(k));
+    rect(c, ((cx + 56) | 0), ((y + 52) | 0), 24, 16, skinColor(k));
+    rect(c, ((cx + 56) | 0), ((y + 66) | 0), 24, 10, trunkColor(k));
+    rect(c, ((cx + 78) | 0), ((y + 50) | 0), 10, 9, gloveColor(k));
+    rect(c, ((cx + 48) | 0), ((y + 54) | 0), 10, 9, gloveColor(k));
+    return;
+}
+
+function statRow(c, label, v, x, y) {
     text(c, label, x, y, 2, -1431648001);
     let _forInitVar = 0;
-    for (; _forInitVar < 3; _forInitVar = _forInitVar + 1 | 0) {
-      let _scopedVar$col = 842158335;
-      _forInitVar < v && (_scopedVar$col = -87540481), rect(c, (x + 60 | 0) + (_forInitVar * 16 | 0) | 0, y, 12, 10, _scopedVar$col);
+    for (; (_forInitVar < 3); _forInitVar = ((_forInitVar + 1) | 0)) {
+        let _scopedVar$col = 842158335;
+        if ((_forInitVar < v)) {
+            _scopedVar$col = -87540481;
+        }
+        rect(c, ((((x + 60) | 0) + ((_forInitVar * 16) | 0)) | 0), y, 12, 10, _scopedVar$col);
     }
-  }
-  function drawOverlay(c, g) {
-    if (g.state === K.INTRO)
-      rect(c, 150, 62, 340, 64, 255), textShadow(c, "ROUND " + String(g.round), 320, 70, 6, -86227201), g.t > 40 && textC(c, "LUTEM!", 320, 110, 2, -1);
-    else if (g.state === K.DOWN) {
-      let _scopedVar$n = g.count;
-      _scopedVar$n > 0 && textShadow(c, "" + String(_scopedVar$n), 320, 64, 10, -1);
-      let _scopedVar$dn = g.a;
-      g.downWho === 2 && (_scopedVar$dn = g.b), _scopedVar$dn.human ? textC(c, "APERTE OS SOCOS PARA LEVANTAR!", 320, 122, 2, -86227201) : textC(c, "QUEDA! O JUIZ ABRE A CONTAGEM...", 320, 122, 2, -86227201);
-    } else if (g.state === K.REST)
-      rect(c, 110, 140, 420, 150, 255), textShadow(c, "FIM DO ROUND " + String(g.round), 320, 150, 4, -86227201), textC(c, boxerName(g.a.kind), 220, 190, 2, trunkColor(g.a.kind)), textC(c, boxerName(g.b.kind), 420, 190, 2, trunkColor(g.b.kind)), textC(c, two(g.a.pts), 220, 208, 5, -1), textC(c, two(g.b.pts), 420, 208, 5, -1), textC(c, "GOLPES " + String(g.a.landed) + "/" + String(g.a.thrown), 220, 244, 1, -926360321), textC(c, "GOLPES " + String(g.b.landed) + "/" + String(g.b.thrown), 420, 244, 1, -926360321), textC(c, "DESCANSANDO NO CORNER...", 320, 266, 2, 2028377855);
-    else if (g.state === K.OVER) {
-      if (rect(c, 80, 58, 480, 104, 255), textShadow(c, g.how, 320, 64, 4, -10858241), !g.winner)
-        textShadow(c, "EMPATE!", 320, 94, 4, -86227201);
-      else {
-        let _scopedVar$wk = g.a.kind;
-        g.winner === 2 && (_scopedVar$wk = g.b.kind), textC(c, "VENCEDOR", 320, 90, 1, -926360321), textShadow(c, boxerName(_scopedVar$wk), 320, 100, 3, trunkColor(_scopedVar$wk));
-      }
-      textC(c, "PONTOS " + String(two(g.a.pts)) + " X " + String(two(g.b.pts)) + "   ROUND " + String(g.round), 320, 126, 2, -1), (g.frame / 15 | 0) % 2 || textC(c, "ENTER = NOVA LUTA", 320, 144, 2, 2028377855);
-    } else
-      g.state === K.PAUSE && (rect(c, 200, 180, 240, 50, 255), textShadow(c, "PAUSA", 320, 190, 5, -1));
-    g.msgT > 0 & (g.msg === "" ? 1 : 0) == 0 & g.state !== K.DOWN && textShadow(c, g.msg, 320, 70, 3, -1017601);
-  }
-  function render(c, g) {
-    if (g.state === K.MENU) {
-      drawMenu(c, g);
-      return;
+    return;
+}
+
+function drawOverlay(c, g) {
+    if ((g.state === K.INTRO)) {
+        rect(c, 150, 62, 340, 64, 255);
+        textShadow(c, (String("ROUND ") + String(g.round)), 320, 70, 6, -86227201);
+        if ((g.t > 40)) {
+            textC(c, "LUTEM!", 320, 110, 2, -1);
+        }
     } else {
-      rect(c, 0, 0, K.W, K.H, 134617343), drawRing(c, g);
-      let win1 = g.state === K.OVER & g.winner === 1, win2 = g.state === K.OVER & g.winner === 2;
-      if (g.a.z <= g.b.z ? (drawBoxer(c, g, g.a, win1), drawBoxer(c, g, g.b, win2)) : (drawBoxer(c, g, g.b, win2), drawBoxer(c, g, g.a, win1)), drawFrontRopes(c), g.shake > 0 & g.shake % 2 === 0) {
-        let _scopedVar$fc = -1;
-        rect(c, 0, 52, K.W, 4, _scopedVar$fc), rect(c, 0, K.H - 4 | 0, K.W, 4, _scopedVar$fc), rect(c, 0, 52, 4, K.H - 52 | 0, _scopedVar$fc), rect(c, K.W - 4 | 0, 52, 4, K.H - 52 | 0, _scopedVar$fc);
-      }
-      drawHud(c, g), drawOverlay(c, g);
-    }
-  }
-  function say(g, m) {
-    let _fldrecv2 = g, _fldval3 = m;
-    _fldrecv2.msg = _fldval3;
-    let _fldrecv4 = g, _fldval5 = 45;
-    _fldrecv4.msgT = _fldval5;
-  }
-  function resetBoxer(p, kind, human) {
-    let _fldrecv3 = p, _fldval4 = kind;
-    _fldrecv3.kind = _fldval4;
-    let _fldrecv5 = p, _fldval6 = human;
-    _fldrecv5.human = _fldval6;
-    let _fldrecv7 = p, _fldval8 = 1e3;
-    _fldrecv7.str = _fldval8;
-    let _fldrecv9 = p, _fldval10 = 1e3;
-    _fldrecv9.sta = _fldval10;
-    let _fldrecv11 = p, _fldval12 = 0;
-    _fldrecv11.meter = _fldval12;
-    let _fldrecv13 = p, _fldval14 = 0;
-    _fldrecv13.pts = _fldval14;
-    let _fldrecv15 = p, _fldval16 = 0;
-    _fldrecv15.kd = _fldval16;
-    let _fldrecv17 = p, _fldval18 = 0;
-    _fldrecv17.kdTotal = _fldval18;
-    let _fldrecv19 = p, _fldval20 = 0;
-    _fldrecv19.thrown = _fldval20;
-    let _fldrecv21 = p, _fldval22 = 0;
-    _fldrecv21.landed = _fldval22, clearAction(p);
-  }
-  function clearAction(p) {
-    let _fldrecv1 = p, _fldval2 = K.IDLE;
-    _fldrecv1.act = _fldval2;
-    let _fldrecv3 = p, _fldval4 = 0;
-    _fldrecv3.actT = _fldval4;
-    let _fldrecv5 = p, _fldval6 = 0;
-    _fldrecv5.queue = _fldval6;
-    let _fldrecv7 = p, _fldval8 = 0;
-    _fldrecv7.stun = _fldval8;
-    let _fldrecv9 = p, _fldval10 = 0;
-    _fldrecv9.flash = _fldval10;
-    let _fldrecv11 = p, _fldval12 = 0;
-    _fldrecv11.rise = _fldval12;
-    let _fldrecv13 = p, _fldval14 = !1;
-    _fldrecv13.resolved = _fldval14;
-  }
-  function corners(g) {
-    let _fldrecv1 = g.a, _fldval2 = 170;
-    _fldrecv1.x = _fldval2;
-    let _fldrecv3 = g.a, _fldval4 = 50;
-    _fldrecv3.z = _fldval4;
-    let _fldrecv5 = g.a, _fldval6 = 1;
-    _fldrecv5.face = _fldval6;
-    let _fldrecv7 = g.b, _fldval8 = 470;
-    _fldrecv7.x = _fldval8;
-    let _fldrecv9 = g.b, _fldval10 = 50;
-    _fldrecv9.z = _fldval10;
-    let _fldrecv11 = g.b, _fldval12 = -1;
-    _fldrecv11.face = _fldval12, clearAction(g.a), clearAction(g.b);
-  }
-  function startFight(g) {
-    resetBoxer(g.a, g.sel1, !0), resetBoxer(g.b, g.sel2, g.mode === 2);
-    let _fldrecv1 = g, _fldval2 = 1;
-    _fldrecv1.round = _fldval2;
-    let _fldrecv3 = g, _fldval4 = 0;
-    _fldrecv3.winner = _fldval4;
-    let _fldrecv5 = g, _fldval6 = "";
-    _fldrecv5.how = _fldval6, startRound(g);
-  }
-  function startRound(g) {
-    corners(g);
-    let _fldrecv1 = g.a, _fldval2 = 0;
-    _fldrecv1.kd = _fldval2;
-    let _fldrecv3 = g.b, _fldval4 = 0;
-    _fldrecv3.kd = _fldval4;
-    let _fldrecv5 = g, _fldval6 = g.roundLen;
-    _fldrecv5.clock = _fldval6;
-    let _fldrecv7 = g, _fldval8 = K.INTRO;
-    _fldrecv7.state = _fldval8;
-    let _fldrecv9 = g, _fldval10 = 0;
-    _fldrecv9.t = _fldval10;
-  }
-  function endFight(g, winner, how) {
-    let _fldrecv3 = g, _fldval4 = winner;
-    _fldrecv3.winner = _fldval4;
-    let _fldrecv5 = g, _fldval6 = how;
-    _fldrecv5.how = _fldval6;
-    let _fldrecv7 = g, _fldval8 = K.OVER;
-    _fldrecv7.state = _fldval8;
-    let _fldrecv9 = g, _fldval10 = 0;
-    _fldrecv9.t = _fldval10, sfx(g, K.S_CROWD);
-    let _fldrecv11 = g.a, _fldval12 = !1;
-    _fldrecv11.inG = _fldval12;
-    let _fldrecv13 = g.b, _fldval14 = !1;
-    _fldrecv13.inG = _fldval14, clearAction(g.a), clearAction(g.b);
-  }
-  function decision(g) {
-    sfx(g, K.S_BELL), g.a.pts > g.b.pts ? endFight(g, 1, "DECISAO") : g.b.pts > g.a.pts ? endFight(g, 2, "DECISAO") : g.a.str > g.b.str ? endFight(g, 1, "DECISAO DIVIDIDA") : g.b.str > g.a.str ? endFight(g, 2, "DECISAO DIVIDIDA") : endFight(g, 0, "FIM DE LUTA");
-  }
-  function addPts(p, v) {
-    let _fldrecv2 = p, _fldval3 = imin(99, p.pts + v | 0);
-    _fldrecv2.pts = _fldval3;
-  }
-  function tryPunch(g, p) {
-    if (p.queue) {
-      let q = p.queue, _fldrecv3 = p, _fldval4 = 0;
-      if (_fldrecv3.queue = _fldval4, p.act !== K.IDLE | p.stun > 0)
-        return;
-      {
-        let act = q;
-        if (q === K.HOOK & p.meter >= 100) {
-          act = K.PAYOFF;
-          let _fldrecv6 = p, _fldval7 = 0;
-          _fldrecv6.meter = _fldval7;
-        }
-        if (p.sta < (staCost(act) / 2 | 0)) {
-          p.human && (say(g, "SEM FOLEGO!"), sfx(g, K.S_TIRED));
-          return;
-        } else {
-          let _fldrecv8 = p, _fldval9 = act;
-          _fldrecv8.act = _fldval9;
-          let _fldrecv10 = p, _fldval11 = 0;
-          _fldrecv10.actT = _fldval11;
-          let _fldrecv12 = p, _fldval13 = !1;
-          _fldrecv12.resolved = _fldval13;
-          let _fldrecv14 = p, _fldval15 = imax(0, p.sta - staCost(act) | 0);
-          _fldrecv14.sta = _fldval15;
-          let _fldrecv16 = p, _fldval17 = p.thrown + 1 | 0;
-          _fldrecv16.thrown = _fldval17;
-        }
-      }
-    } else
-      return;
-  }
-  function resolveHit(g, at, df) {
-    let act = at.act, dx = (df.x - at.x | 0) * at.face | 0, dz = iabs(df.z - at.z | 0);
-    if (dx < 18 | dx > reach(act) | dz > 14) {
-      sfx(g, K.S_WHIFF);
-      return;
-    } else {
-      if (df.str <= 0)
-        return;
-      {
-        let toBody = act === K.BODY, dmg = baseDmg(act);
-        dmg = (dmg * (80 + (statPow(at.kind) * 15 | 0) | 0) | 0) / 100 | 0, dmg = (dmg * (60 + (at.sta / 25 | 0) | 0) | 0) / 100 | 0, dmg = (dmg * (115 - (statChin(df.kind) * 10 | 0) | 0) | 0) / 100 | 0;
-        let weakHit = toBody && statWeak(df.kind) === 1 || (toBody ? 0 : 1) && statWeak(df.kind) === 0;
-        weakHit && (dmg = (dmg * 3 | 0) / 2 | 0);
-        let counter = df.act !== K.IDLE & df.actT < windup(df.act);
-        if (counter && (dmg = (dmg * 5 | 0) / 4 | 0), df.inG && df.act === K.IDLE && df.stun === 0) {
-          let _scopedVar$pass = 0;
-          act === K.BODY && (_scopedVar$pass = 25), act === K.HOOK && (_scopedVar$pass = 30), act === K.PAYOFF && (_scopedVar$pass = 50), dmg = (dmg * _scopedVar$pass | 0) / 100 | 0, addPts(df, 1);
-          let _fldrecv11 = df, _fldval12 = imax(0, df.sta - 12 | 0);
-          _fldrecv11.sta = _fldval12;
-          let _fldrecv13 = df, _fldval14 = clampi(df.x + (at.face * 3 | 0) | 0, 70, 570);
-          if (_fldrecv13.x = _fldval14, sfx(g, K.S_BLOCK), !dmg) {
-            (df.human || at.human) && say(g, "BLOQUEOU!");
-            return;
-          }
-        }
-        let _fldrecv15 = df, _fldval16 = df.str - dmg | 0;
-        _fldrecv15.str = _fldval16, act === K.JAB && sfx(g, K.S_JAB), act === K.BODY && sfx(g, K.S_BODY), act === K.HOOK && sfx(g, K.S_HOOK), act === K.PAYOFF && sfx(g, K.S_PAY);
-        let _fldrecv17 = df, _fldval18 = imax(0, df.sta - (dmg / 3 | 0) | 0);
-        _fldrecv17.sta = _fldval18;
-        let _fldrecv19 = at, _fldval20 = imin(100, (at.meter + (dmg / 7 | 0) | 0) + 2 | 0);
-        _fldrecv19.meter = _fldval20;
-        let _fldrecv21 = at, _fldval22 = at.landed + 1 | 0;
-        _fldrecv21.landed = _fldval22, addPts(at, punchPts(act));
-        let _fldrecv23 = df, _fldval24 = 3;
-        _fldrecv23.flash = _fldval24;
-        let st = 5, push = 4;
-        if (act === K.BODY && (st = 8, push = 6), act === K.HOOK && (st = 12, push = 10), act === K.PAYOFF) {
-          st = 22, push = 20;
-          let _fldrecv27 = g, _fldval28 = 10;
-          _fldrecv27.shake = _fldval28;
-        }
-        let _fldrecv29 = df, _fldval30 = st;
-        _fldrecv29.stun = _fldval30;
-        let _fldrecv31 = df, _fldval32 = K.IDLE;
-        _fldrecv31.act = _fldval32;
-        let _fldrecv33 = df, _fldval34 = 0;
-        _fldrecv33.actT = _fldval34;
-        let _fldrecv35 = df, _fldval36 = clampi(df.x + (at.face * push | 0) | 0, 70, 570);
-        if (_fldrecv35.x = _fldval36, act === K.PAYOFF ? say(g, "PAYOFF!!") : counter ? say(g, "CONTRA-GOLPE!") : weakHit && act !== K.JAB && say(g, "NO PONTO FRACO!"), df.str <= 0) {
-          let _fldrecv37 = df, _fldval38 = 0;
-          _fldrecv37.str = _fldval38, knockdown(g, df);
-        }
-      }
-    }
-  }
-  function knockdown(g, p) {
-    let _fldrecv2 = p, _fldval3 = p.kd + 1 | 0;
-    _fldrecv2.kd = _fldval3;
-    let _fldrecv4 = p, _fldval5 = p.kdTotal + 1 | 0;
-    _fldrecv4.kdTotal = _fldval5;
-    let _fldrecv6 = p, _fldval7 = 0;
-    _fldrecv6.rise = _fldval7;
-    let _fldrecv8 = p, _fldval9 = !1;
-    _fldrecv8.inG = _fldval9;
-    let _fldrecv10 = g, _fldval11 = K.DOWN;
-    _fldrecv10.state = _fldval11;
-    let _fldrecv12 = g, _fldval13 = 0;
-    _fldrecv12.t = _fldval13;
-    let _fldrecv14 = g, _fldval15 = 0;
-    _fldrecv14.count = _fldval15;
-    let _fldrecv16 = g, _fldval17 = 8;
-    if (_fldrecv16.shake = _fldval17, sfx(g, K.S_DOWN), p === g.a) {
-      let _fldrecv18 = g, _fldval19 = 1;
-      _fldrecv18.downWho = _fldval19;
-    } else {
-      let _fldrecv20 = g, _fldval21 = 2;
-      _fldrecv20.downWho = _fldval21;
-    }
-    if (p.kd >= 3) {
-      let _scopedVar$w = 2;
-      g.downWho === 2 && (_scopedVar$w = 1), endFight(g, _scopedVar$w, "NOCAUTE TECNICO");
-      return;
-    } else {
-      say(g, "QUEDA!");
-      let o = g.b;
-      g.downWho === 2 && (o = g.a);
-      let _fldrecv24 = o, _fldval25 = K.IDLE;
-      _fldrecv24.act = _fldval25;
-      let _fldrecv26 = o, _fldval27 = 0;
-      _fldrecv26.actT = _fldval27;
-      let _fldrecv28 = o, _fldval29 = !1;
-      _fldrecv28.inG = _fldval29;
-    }
-  }
-  function updateBoxer(g, p, o) {
-    if (p.flash > 0) {
-      let _fldrecv3 = p, _fldval4 = p.flash - 1 | 0;
-      _fldrecv3.flash = _fldval4;
-    }
-    if (p.act === K.IDLE & p.stun === 0)
-      if (o.x > p.x) {
-        let _fldrecv5 = p, _fldval6 = 1;
-        _fldrecv5.face = _fldval6;
-      } else {
-        let _fldrecv7 = p, _fldval8 = -1;
-        _fldrecv7.face = _fldval8;
-      }
-    if (p.stun > 0) {
-      let _fldrecv9 = p, _fldval10 = p.stun - 1 | 0;
-      _fldrecv9.stun = _fldval10;
-      let _fldrecv11 = p, _fldval12 = 0;
-      _fldrecv11.walk = _fldval12;
-      return;
-    } else if (p.act !== K.IDLE) {
-      let _fldrecv13 = p, _fldval14 = p.actT + 1 | 0;
-      if (_fldrecv13.actT = _fldval14, !p.resolved && !0 && p.actT === windup(p.act)) {
-        let _fldrecv15 = p, _fldval16 = !0;
-        if (_fldrecv15.resolved = _fldval16, resolveHit(g, p, o), g.state !== K.FIGHT)
-          return;
-      }
-      let _scopedVar$extra = 0;
-      if (p.sta < 300 && (_scopedVar$extra = 5), p.actT >= (actLen(p.act) + _scopedVar$extra | 0)) {
-        let _fldrecv18 = p, _fldval19 = K.IDLE;
-        _fldrecv18.act = _fldval19;
-        let _fldrecv20 = p, _fldval21 = 0;
-        _fldrecv20.actT = _fldval21;
-      }
-      return;
-    } else {
-      if (tryPunch(g, p), p.act !== K.IDLE)
-        return;
-      {
-        let sp = 2 + statSpd(p.kind) | 0;
-        p.sta < 300 && (sp = sp - 1 | 0), p.inG && (sp = imax(1, sp / 2 | 0));
-        let mx = 0, mz = 0;
-        p.inL && (mx = mx - sp | 0), p.inR && (mx = mx + sp | 0), p.inU && (mz = mz - imax(1, sp - 1 | 0) | 0), p.inD && (mz = mz + imax(1, sp - 1 | 0) | 0);
-        let nx = clampi(p.x + mx | 0, 70, 570), nz = clampi(p.z + mz | 0, 0, 100);
-        if (iabs(nz - o.z | 0) < 16 & iabs(nx - o.x | 0) < 44 & iabs(nx - o.x | 0) < iabs(p.x - o.x | 0) && (nx = p.x), nx !== p.x | nz !== p.z) {
-          let _fldrecv27 = p, _fldval28 = p.walk + 1 | 0;
-          _fldrecv27.walk = _fldval28;
-          let _fldrecv29 = p, _fldval30 = imax(0, p.sta - 1 | 0);
-          _fldrecv29.sta = _fldval30;
-        } else {
-          let _fldrecv31 = p, _fldval32 = 0;
-          _fldrecv31.walk = _fldval32;
-        }
-        let _fldrecv33 = p, _fldval34 = nx;
-        _fldrecv33.x = _fldval34;
-        let _fldrecv35 = p, _fldval36 = nz;
-        if (_fldrecv35.z = _fldval36, p.inG) {
-          let _fldrecv37 = p, _fldval38 = imax(0, p.sta - 1 | 0);
-          _fldrecv37.sta = _fldval38;
-        } else if (mx === 0 & mz === 0) {
-          let _fldrecv39 = p, _fldval40 = imin(1e3, p.sta + 4 | 0);
-          _fldrecv39.sta = _fldval40;
-        } else {
-          let _fldrecv41 = p, _fldval42 = imin(1e3, p.sta + 1 | 0);
-          _fldrecv41.sta = _fldval42;
-        }
-      }
-    }
-  }
-  function think(g, p, o) {
-    if (p.aiT > 0) {
-      let _fldrecv3 = p, _fldval4 = p.aiT - 1 | 0;
-      _fldrecv3.aiT = _fldval4;
-      return;
-    } else {
-      let _fldrecv5 = p, _fldval6 = 10 - (g.diff * 3 | 0) | 0;
-      _fldrecv5.aiT = _fldval6;
-      let _fldrecv7 = p, _fldval8 = !1;
-      _fldrecv7.inL = _fldval8;
-      let _fldrecv9 = p, _fldval10 = !1;
-      _fldrecv9.inR = _fldval10;
-      let _fldrecv11 = p, _fldval12 = !1;
-      _fldrecv11.inU = _fldval12;
-      let _fldrecv13 = p, _fldval14 = !1;
-      _fldrecv13.inD = _fldval14;
-      let _fldrecv15 = p, _fldval16 = !1;
-      _fldrecv15.inG = _fldval16;
-      let dx = o.x - p.x | 0, adx = iabs(dx), dz = o.z - p.z | 0, toward = 1;
-      if (dx < 0 && (toward = -1), p.sta < 220 & adx < 110 & rnd(g, 100) < 70) {
-        if (toward > 0) {
-          let _fldrecv21 = p, _fldval22 = !0;
-          _fldrecv21.inL = _fldval22;
-        } else {
-          let _fldrecv23 = p, _fldval24 = !0;
-          _fldrecv23.inR = _fldval24;
-        }
-        if (dz >= 0) {
-          let _fldrecv25 = p, _fldval26 = !0;
-          _fldrecv25.inU = _fldval26;
-        } else {
-          let _fldrecv27 = p, _fldval28 = !0;
-          _fldrecv27.inD = _fldval28;
-        }
-        return;
-      } else if (o.act !== K.IDLE & o.actT < windup(o.act) & adx < 90 & iabs(dz) < 18 && rnd(g, 100) < (15 + (g.diff * 22 | 0) | 0)) {
-        let _fldrecv30 = p, _fldval31 = !0;
-        _fldrecv30.inG = _fldval31;
-        return;
-      } else {
-        if (dz > 5) {
-          let _fldrecv32 = p, _fldval33 = !0;
-          _fldrecv32.inD = _fldval33;
-        }
-        if (dz < -5) {
-          let _fldrecv34 = p, _fldval35 = !0;
-          _fldrecv34.inU = _fldval35;
-        }
-        if (adx > 60)
-          if (toward > 0) {
-            let _fldrecv36 = p, _fldval37 = !0;
-            _fldrecv36.inR = _fldval37;
-          } else {
-            let _fldrecv38 = p, _fldval39 = !0;
-            _fldrecv38.inL = _fldval39;
-          }
-        else if (adx < 46)
-          if (toward > 0) {
-            let _fldrecv40 = p, _fldval41 = !0;
-            _fldrecv40.inL = _fldval41;
-          } else {
-            let _fldrecv42 = p, _fldval43 = !0;
-            _fldrecv42.inR = _fldval43;
-          }
-        if (adx <= 66 & iabs(dz) <= 12 & p.act === K.IDLE & p.stun === 0) {
-          if (rnd(g, 100) < (10 + (g.diff * 16 | 0) | 0))
-            if (p.meter >= 100) {
-              let _fldrecv44 = p, _fldval45 = K.HOOK;
-              _fldrecv44.queue = _fldval45;
-            } else {
-              let _scopedVar$r = rnd(g, 100);
-              if (statWeak(o.kind) === 1)
-                if (_scopedVar$r < 45) {
-                  let _fldrecv47 = p, _fldval48 = K.BODY;
-                  _fldrecv47.queue = _fldval48;
-                } else if (_scopedVar$r < 82) {
-                  let _fldrecv49 = p, _fldval50 = K.JAB;
-                  _fldrecv49.queue = _fldval50;
-                } else {
-                  let _fldrecv51 = p, _fldval52 = K.HOOK;
-                  _fldrecv51.queue = _fldval52;
-                }
-              else if (_scopedVar$r < 45) {
-                let _fldrecv53 = p, _fldval54 = K.JAB;
-                _fldrecv53.queue = _fldval54;
-              } else if (_scopedVar$r < 75) {
-                let _fldrecv55 = p, _fldval56 = K.HOOK;
-                _fldrecv55.queue = _fldval56;
-              } else {
-                let _fldrecv57 = p, _fldval58 = K.BODY;
-                _fldrecv57.queue = _fldval58;
-              }
+        if ((g.state === K.DOWN)) {
+            let _scopedVar$n = g.count;
+            if ((_scopedVar$n > 0)) {
+                textShadow(c, (String("") + String(_scopedVar$n)), 320, 64, 10, -1);
             }
-          else if (rnd(g, 100) < 12) {
-            let _fldrecv59 = p, _fldval60 = !0;
-            _fldrecv59.inG = _fldval60;
-          }
-        }
-      }
-    }
-  }
-  function tick(g) {
-    let _fldrecv1 = g, _fldval2 = g.frame + 1 | 0;
-    _fldrecv1.frame = _fldval2;
-    let _fldrecv3 = g, _fldval4 = g.t + 1 | 0;
-    if (_fldrecv3.t = _fldval4, g.msgT > 0) {
-      let _fldrecv5 = g, _fldval6 = g.msgT - 1 | 0;
-      _fldrecv5.msgT = _fldval6;
-    }
-    if (g.shake > 0) {
-      let _fldrecv7 = g, _fldval8 = g.shake - 1 | 0;
-      _fldrecv7.shake = _fldval8;
-    }
-    if (g.state === K.INTRO) {
-      if (g.t >= 70) {
-        sfx(g, K.S_BELL);
-        let _fldrecv9 = g, _fldval10 = K.FIGHT;
-        _fldrecv9.state = _fldval10;
-        let _fldrecv11 = g, _fldval12 = 0;
-        _fldrecv11.t = _fldval12;
-      }
-    } else if (g.state === K.FIGHT) {
-      if (!g.b.human && think(g, g.b, g.a), updateBoxer(g, g.a, g.b), g.state === K.FIGHT && updateBoxer(g, g.b, g.a), g.state === K.FIGHT) {
-        let _fldrecv13 = g, _fldval14 = g.clock - 1 | 0;
-        if (_fldrecv13.clock = _fldval14, g.clock <= 0) {
-          let _fldrecv15 = g, _fldval16 = 0;
-          if (_fldrecv15.clock = _fldval16, g.round >= g.rounds)
-            decision(g);
-          else {
-            let _fldrecv17 = g, _fldval18 = K.REST;
-            _fldrecv17.state = _fldval18;
-            let _fldrecv19 = g, _fldval20 = 0;
-            _fldrecv19.t = _fldval20, sfx(g, K.S_BELL), say(g, "GONGO!");
-          }
-        }
-      }
-    } else if (g.state === K.DOWN) {
-      let _scopedVar$p = g.a;
-      g.downWho === 2 && (_scopedVar$p = g.b);
-      let _scopedVar$gain = ((1 + statChin(_scopedVar$p.kind) | 0) * (_scopedVar$p.sta + 200 | 0) | 0) / 600 | 0;
-      _scopedVar$p.human ? _scopedVar$gain = imax(1, _scopedVar$gain / 2 | 0) : _scopedVar$gain = imax(2, _scopedVar$gain) + rnd(g, 2) | 0;
-      let _fldrecv23 = _scopedVar$p, _fldval24 = _scopedVar$p.rise + _scopedVar$gain | 0;
-      _fldrecv23.rise = _fldval24;
-      let _scopedVar$need = (150 + ((1e3 - _scopedVar$p.sta | 0) / 4 | 0) | 0) + (_scopedVar$p.kdTotal * 80 | 0) | 0;
-      if (!(g.t % 24)) {
-        let _fldrecv26 = g, _fldval27 = g.count + 1 | 0;
-        if (_fldrecv26.count = _fldval27, g.count < 10 && sfx(g, K.S_COUNT), g.count >= 10) {
-          let _scopedVar$w = 2;
-          g.downWho === 2 && (_scopedVar$w = 1), endFight(g, _scopedVar$w, "NOCAUTE!");
-          return;
-        }
-      }
-      if (g.t > 30 & _scopedVar$p.rise >= _scopedVar$need) {
-        let _fldrecv29 = _scopedVar$p, _fldval30 = 150 + (_scopedVar$p.sta / 4 | 0) | 0;
-        _fldrecv29.str = _fldval30;
-        let _fldrecv31 = _scopedVar$p, _fldval32 = imin(1e3, _scopedVar$p.sta + 100 | 0);
-        _fldrecv31.sta = _fldval32;
-        let _fldrecv33 = _scopedVar$p, _fldval34 = 15;
-        _fldrecv33.stun = _fldval34;
-        let _fldrecv35 = g, _fldval36 = K.FIGHT;
-        _fldrecv35.state = _fldval36;
-        let _fldrecv37 = g, _fldval38 = 0;
-        if (_fldrecv37.t = _fldval38, say(g, "LEVANTOU! LUTA!"), sfx(g, K.S_RISE), g.a.x < g.b.x) {
-          let _fldrecv39 = g.a, _fldval40 = clampi(g.a.x - 50 | 0, 70, 570);
-          _fldrecv39.x = _fldval40;
-          let _fldrecv41 = g.b, _fldval42 = clampi(g.b.x + 50 | 0, 70, 570);
-          _fldrecv41.x = _fldval42;
+            let _scopedVar$dn = g.a;
+            if ((g.downWho === 2)) {
+                _scopedVar$dn = g.b;
+            }
+            if (_scopedVar$dn.human) {
+                textC(c, "APERTE OS SOCOS PARA LEVANTAR!", 320, 122, 2, -86227201);
+            } else {
+                textC(c, "QUEDA! O JUIZ ABRE A CONTAGEM...", 320, 122, 2, -86227201);
+            }
         } else {
-          let _fldrecv43 = g.a, _fldval44 = clampi(g.a.x + 50 | 0, 70, 570);
-          _fldrecv43.x = _fldval44;
-          let _fldrecv45 = g.b, _fldval46 = clampi(g.b.x - 50 | 0, 70, 570);
-          _fldrecv45.x = _fldval46;
+            if ((g.state === K.REST)) {
+                rect(c, 110, 140, 420, 150, 255);
+                textShadow(c, (String("FIM DO ROUND ") + String(g.round)), 320, 150, 4, -86227201);
+                textC(c, boxerName(g.a.kind), 220, 190, 2, trunkColor(g.a.kind));
+                textC(c, boxerName(g.b.kind), 420, 190, 2, trunkColor(g.b.kind));
+                textC(c, two(g.a.pts), 220, 208, 5, -1);
+                textC(c, two(g.b.pts), 420, 208, 5, -1);
+                textC(c, (String((String((String("GOLPES ") + String(g.a.landed))) + String("/"))) + String(g.a.thrown)), 220, 244, 1, -926360321);
+                textC(c, (String((String((String("GOLPES ") + String(g.b.landed))) + String("/"))) + String(g.b.thrown)), 420, 244, 1, -926360321);
+                textC(c, "DESCANSANDO NO CORNER...", 320, 266, 2, 2028377855);
+            } else {
+                if ((g.state === K.OVER)) {
+                    rect(c, 80, 58, 480, 104, 255);
+                    textShadow(c, g.how, 320, 64, 4, -10858241);
+                    if ((!g.winner)) {
+                        textShadow(c, "EMPATE!", 320, 94, 4, -86227201);
+                    } else {
+                        let _scopedVar$wk = g.a.kind;
+                        if ((g.winner === 2)) {
+                            _scopedVar$wk = g.b.kind;
+                        }
+                        textC(c, "VENCEDOR", 320, 90, 1, -926360321);
+                        textShadow(c, boxerName(_scopedVar$wk), 320, 100, 3, trunkColor(_scopedVar$wk));
+                    }
+                    textC(c, (String((String((String((String((String("PONTOS ") + String(two(g.a.pts)))) + String(" X "))) + String(two(g.b.pts)))) + String("   ROUND "))) + String(g.round)), 320, 126, 2, -1);
+                    if ((!(((g.frame / 15) | 0) % 2))) {
+                        textC(c, "ENTER = NOVA LUTA", 320, 144, 2, 2028377855);
+                    }
+                } else {
+                    if ((g.state === K.PAUSE)) {
+                        rect(c, 200, 180, 240, 50, 255);
+                        textShadow(c, "PAUSA", 320, 190, 5, -1);
+                    }
+                }
+            }
         }
-      }
-    } else if (g.state === K.REST) {
-      if (g.t === 1) {
-        let _fldrecv47 = g.a, _fldval48 = imin(1e3, imax(g.a.str, 1) + 250 | 0);
-        _fldrecv47.str = _fldval48;
-        let _fldrecv49 = g.b, _fldval50 = imin(1e3, imax(g.b.str, 1) + 250 | 0);
-        _fldrecv49.str = _fldval50;
-        let _fldrecv51 = g.a, _fldval52 = imin(1e3, g.a.sta + 450 | 0);
-        _fldrecv51.sta = _fldval52;
-        let _fldrecv53 = g.b, _fldval54 = imin(1e3, g.b.sta + 450 | 0);
-        _fldrecv53.sta = _fldval54;
-      }
-      if (g.t >= 120) {
-        let _fldrecv55 = g, _fldval56 = g.round + 1 | 0;
-        _fldrecv55.round = _fldval56, startRound(g);
-      }
     }
-  }
-  function confirm(g) {
-    if (g.state === K.MENU)
-      startFight(g);
-    else if (g.state === K.OVER) {
-      let _fldrecv1 = g, _fldval2 = K.MENU;
-      _fldrecv1.state = _fldval2;
-      let _fldrecv3 = g, _fldval4 = 0;
-      _fldrecv3.t = _fldval4;
+    if ((((g.msgT > 0) & (((g.msg === "") ? 1 : 0) === 0)) & (g.state !== K.DOWN))) {
+        textShadow(c, g.msg, 320, 70, 3, -1017601);
     }
-  }
-  function mash(g, p) {
-    if (g.state === K.DOWN) {
-      let _scopedVar$dn = g.a;
-      if (g.downWho === 2 && (_scopedVar$dn = g.b), _scopedVar$dn === p && p.human) {
-        let _fldrecv3 = p, _fldval4 = p.rise + 9 | 0;
-        _fldrecv3.rise = _fldval4;
-      }
-    }
-  }
-  function onKey(g, raw, down) {
-    let k = raw.toLowerCase();
-    if (down && (k === "enter" || !1)) {
-      confirm(g);
-      return;
-    } else if (down && (k === "p" || !1)) {
-      if (g.state === K.FIGHT) {
-        let _fldrecv4 = g, _fldval5 = g.state;
-        _fldrecv4.prevState = _fldval5;
-        let _fldrecv6 = g, _fldval7 = K.PAUSE;
-        _fldrecv6.state = _fldval7;
-      } else if (g.state === K.PAUSE) {
-        let _fldrecv8 = g, _fldval9 = g.prevState;
-        _fldrecv8.state = _fldval9;
-      }
-      return;
-    } else if (down && (k === "n" || !1)) {
-      let _fldrecv10 = g.sfx, _fldval11 = g.sfx.on ? 0 : 1;
-      _fldrecv10.on = _fldval11, sfx(g, K.S_BLIP);
-      return;
-    } else {
-      let a = g.a, b = g.b, solo = g.mode === 1;
-      if (k === "a" || !1 || solo && (k === "arrowleft" || !1)) {
-        let _fldrecv15 = a, _fldval16 = down;
-        _fldrecv15.inL = _fldval16;
-      }
-      if (k === "d" || !1 || solo && (k === "arrowright" || !1)) {
-        let _fldrecv17 = a, _fldval18 = down;
-        _fldrecv17.inR = _fldval18;
-      }
-      if (k === "w" || !1 || solo && (k === "arrowup" || !1)) {
-        let _fldrecv19 = a, _fldval20 = down;
-        _fldrecv19.inU = _fldval20;
-      }
-      if (k === "s" || !1 || solo && (k === "arrowdown" || !1)) {
-        let _fldrecv21 = a, _fldval22 = down;
-        _fldrecv21.inD = _fldval22;
-      }
-      if (k === "r" || !1 || solo && (k === "i" || !1)) {
-        let _fldrecv23 = a, _fldval24 = down;
-        _fldrecv23.inG = _fldval24;
-      }
-      if ((k === "f" || solo && k === "j") && press(g, a, K.JAB, down), (k === "g" || solo && k === "k") && press(g, a, K.BODY, down), (k === "h" || solo && k === "l") && press(g, a, K.HOOK, down), solo)
+    return;
+}
+
+function render(c, g) {
+    if ((g.state === K.MENU)) {
+        drawMenu(c, g);
         return;
-      if (k === "arrowleft" || !1) {
-        let _fldrecv25 = b, _fldval26 = down;
-        _fldrecv25.inL = _fldval26;
-      }
-      if (k === "arrowright" || !1) {
-        let _fldrecv27 = b, _fldval28 = down;
-        _fldrecv27.inR = _fldval28;
-      }
-      if (k === "arrowup" || !1) {
-        let _fldrecv29 = b, _fldval30 = down;
-        _fldrecv29.inU = _fldval30;
-      }
-      if (k === "arrowdown" || !1) {
-        let _fldrecv31 = b, _fldval32 = down;
-        _fldrecv31.inD = _fldval32;
-      }
-      if (k === "0" || !1 || (k === "m" || !1)) {
-        let _fldrecv33 = b, _fldval34 = down;
-        _fldrecv33.inG = _fldval34;
-      }
-      (k === "1" || k === ",") && press(g, b, K.JAB, down), (k === "2" || k === ".") && press(g, b, K.BODY, down), (k === "3" || k === "/") && press(g, b, K.HOOK, down);
+    } else {
+        rect(c, 0, 0, K.W, K.H, 134617343);
+        drawRing(c, g);
+        let win1 = ((g.state === K.OVER) & (g.winner === 1));
+        let win2 = ((g.state === K.OVER) & (g.winner === 2));
+        if ((g.a.z <= g.b.z)) {
+            drawBoxer(c, g, g.a, win1);
+            drawBoxer(c, g, g.b, win2);
+        } else {
+            drawBoxer(c, g, g.b, win2);
+            drawBoxer(c, g, g.a, win1);
+        }
+        drawFrontRopes(c);
+        if (((g.shake > 0) & ((g.shake % 2) === 0))) {
+            let _scopedVar$fc = -1;
+            rect(c, 0, 52, K.W, 4, _scopedVar$fc);
+            rect(c, 0, ((K.H - 4) | 0), K.W, 4, _scopedVar$fc);
+            rect(c, 0, 52, 4, ((K.H - 52) | 0), _scopedVar$fc);
+            rect(c, ((K.W - 4) | 0), 52, 4, ((K.H - 52) | 0), _scopedVar$fc);
+        }
+        drawHud(c, g);
+        drawOverlay(c, g);
     }
-  }
-  function press(g, p, act, down) {
-    let held = !1;
-    if (act === K.JAB) {
-      held = p.hJ;
-      let _fldrecv5 = p, _fldval6 = down;
-      _fldrecv5.hJ = _fldval6;
+    return;
+}
+
+function say(g, m) {
+    let _fldrecv2 = g;
+    let _fldval3 = m;
+    (_fldrecv2.msg = _fldval3);
+    let _fldrecv4 = g;
+    let _fldval5 = 45;
+    (_fldrecv4.msgT = _fldval5);
+    return;
+}
+
+function resetBoxer(p, kind, human) {
+    let _fldrecv3 = p;
+    let _fldval4 = kind;
+    (_fldrecv3.kind = _fldval4);
+    let _fldrecv5 = p;
+    let _fldval6 = human;
+    (_fldrecv5.human = _fldval6);
+    let _fldrecv7 = p;
+    let _fldval8 = 1000;
+    (_fldrecv7.str = _fldval8);
+    let _fldrecv9 = p;
+    let _fldval10 = 1000;
+    (_fldrecv9.sta = _fldval10);
+    let _fldrecv11 = p;
+    let _fldval12 = 0;
+    (_fldrecv11.meter = _fldval12);
+    let _fldrecv13 = p;
+    let _fldval14 = 0;
+    (_fldrecv13.pts = _fldval14);
+    let _fldrecv15 = p;
+    let _fldval16 = 0;
+    (_fldrecv15.kd = _fldval16);
+    let _fldrecv17 = p;
+    let _fldval18 = 0;
+    (_fldrecv17.kdTotal = _fldval18);
+    let _fldrecv19 = p;
+    let _fldval20 = 0;
+    (_fldrecv19.thrown = _fldval20);
+    let _fldrecv21 = p;
+    let _fldval22 = 0;
+    (_fldrecv21.landed = _fldval22);
+    clearAction(p);
+    return;
+}
+
+function clearAction(p) {
+    let _fldrecv1 = p;
+    let _fldval2 = K.IDLE;
+    (_fldrecv1.act = _fldval2);
+    let _fldrecv3 = p;
+    let _fldval4 = 0;
+    (_fldrecv3.actT = _fldval4);
+    let _fldrecv5 = p;
+    let _fldval6 = 0;
+    (_fldrecv5.queue = _fldval6);
+    let _fldrecv7 = p;
+    let _fldval8 = 0;
+    (_fldrecv7.stun = _fldval8);
+    let _fldrecv9 = p;
+    let _fldval10 = 0;
+    (_fldrecv9.flash = _fldval10);
+    let _fldrecv11 = p;
+    let _fldval12 = 0;
+    (_fldrecv11.rise = _fldval12);
+    let _fldrecv13 = p;
+    let _fldval14 = false;
+    (_fldrecv13.resolved = _fldval14);
+    return;
+}
+
+function corners(g) {
+    let _fldrecv1 = g.a;
+    let _fldval2 = 170;
+    (_fldrecv1.x = _fldval2);
+    let _fldrecv3 = g.a;
+    let _fldval4 = 50;
+    (_fldrecv3.z = _fldval4);
+    let _fldrecv5 = g.a;
+    let _fldval6 = 1;
+    (_fldrecv5.face = _fldval6);
+    let _fldrecv7 = g.b;
+    let _fldval8 = 470;
+    (_fldrecv7.x = _fldval8);
+    let _fldrecv9 = g.b;
+    let _fldval10 = 50;
+    (_fldrecv9.z = _fldval10);
+    let _fldrecv11 = g.b;
+    let _fldval12 = -1;
+    (_fldrecv11.face = _fldval12);
+    clearAction(g.a);
+    clearAction(g.b);
+    return;
+}
+
+function startFight(g) {
+    resetBoxer(g.a, g.sel1, true);
+    resetBoxer(g.b, g.sel2, (g.mode === 2));
+    let _fldrecv1 = g;
+    let _fldval2 = 1;
+    (_fldrecv1.round = _fldval2);
+    let _fldrecv3 = g;
+    let _fldval4 = 0;
+    (_fldrecv3.winner = _fldval4);
+    let _fldrecv5 = g;
+    let _fldval6 = "";
+    (_fldrecv5.how = _fldval6);
+    startRound(g);
+    return;
+}
+
+function startRound(g) {
+    corners(g);
+    let _fldrecv1 = g.a;
+    let _fldval2 = 0;
+    (_fldrecv1.kd = _fldval2);
+    let _fldrecv3 = g.b;
+    let _fldval4 = 0;
+    (_fldrecv3.kd = _fldval4);
+    let _fldrecv5 = g;
+    let _fldval6 = g.roundLen;
+    (_fldrecv5.clock = _fldval6);
+    let _fldrecv7 = g;
+    let _fldval8 = K.INTRO;
+    (_fldrecv7.state = _fldval8);
+    let _fldrecv9 = g;
+    let _fldval10 = 0;
+    (_fldrecv9.t = _fldval10);
+    return;
+}
+
+function endFight(g, winner, how) {
+    let _fldrecv3 = g;
+    let _fldval4 = winner;
+    (_fldrecv3.winner = _fldval4);
+    let _fldrecv5 = g;
+    let _fldval6 = how;
+    (_fldrecv5.how = _fldval6);
+    let _fldrecv7 = g;
+    let _fldval8 = K.OVER;
+    (_fldrecv7.state = _fldval8);
+    let _fldrecv9 = g;
+    let _fldval10 = 0;
+    (_fldrecv9.t = _fldval10);
+    sfx(g, K.S_CROWD);
+    let _fldrecv11 = g.a;
+    let _fldval12 = false;
+    (_fldrecv11.inG = _fldval12);
+    let _fldrecv13 = g.b;
+    let _fldval14 = false;
+    (_fldrecv13.inG = _fldval14);
+    clearAction(g.a);
+    clearAction(g.b);
+    return;
+}
+
+function decision(g) {
+    sfx(g, K.S_BELL);
+    if ((g.a.pts > g.b.pts)) {
+        endFight(g, 1, "DECISAO");
+    } else {
+        if ((g.b.pts > g.a.pts)) {
+            endFight(g, 2, "DECISAO");
+        } else {
+            if ((g.a.str > g.b.str)) {
+                endFight(g, 1, "DECISAO DIVIDIDA");
+            } else {
+                if ((g.b.str > g.a.str)) {
+                    endFight(g, 2, "DECISAO DIVIDIDA");
+                } else {
+                    endFight(g, 0, "FIM DE LUTA");
+                }
+            }
+        }
     }
-    if (act === K.BODY) {
-      held = p.hB;
-      let _fldrecv7 = p, _fldval8 = down;
-      _fldrecv7.hB = _fldval8;
+    return;
+}
+
+function addPts(p, v) {
+    let _fldrecv2 = p;
+    let _fldval3 = imin(99, ((p.pts + v) | 0));
+    (_fldrecv2.pts = _fldval3);
+    return;
+}
+
+function tryPunch(g, p) {
+    if ((!p.queue)) {
+        return;
+    } else {
+        let q = p.queue;
+        let _fldrecv3 = p;
+        let _fldval4 = 0;
+        (_fldrecv3.queue = _fldval4);
+        if (((p.act !== K.IDLE) | (p.stun > 0))) {
+            return;
+        } else {
+            let act = q;
+            if (((q === K.HOOK) & (p.meter >= 100))) {
+                act = K.PAYOFF;
+                let _fldrecv6 = p;
+                let _fldval7 = 0;
+                (_fldrecv6.meter = _fldval7);
+            }
+            if ((p.sta < ((staCost(act) / 2) | 0))) {
+                if (p.human) {
+                    say(g, "SEM FOLEGO!");
+                    sfx(g, K.S_TIRED);
+                }
+                return;
+            } else {
+                let _fldrecv8 = p;
+                let _fldval9 = act;
+                (_fldrecv8.act = _fldval9);
+                let _fldrecv10 = p;
+                let _fldval11 = 0;
+                (_fldrecv10.actT = _fldval11);
+                let _fldrecv12 = p;
+                let _fldval13 = false;
+                (_fldrecv12.resolved = _fldval13);
+                let _fldrecv14 = p;
+                let _fldval15 = imax(0, ((p.sta - staCost(act)) | 0));
+                (_fldrecv14.sta = _fldval15);
+                let _fldrecv16 = p;
+                let _fldval17 = ((p.thrown + 1) | 0);
+                (_fldrecv16.thrown = _fldval17);
+            }
+        }
     }
-    if (act === K.HOOK) {
-      held = p.hH;
-      let _fldrecv9 = p, _fldval10 = down;
-      _fldrecv9.hH = _fldval10;
+    return;
+}
+
+function resolveHit(g, at, df) {
+    let act = at.act;
+    let dx = ((((df.x - at.x) | 0) * at.face) | 0);
+    let dz = iabs(((df.z - at.z) | 0));
+    if ((((dx < 18) | (dx > reach(act))) | (dz > 14))) {
+        sfx(g, K.S_WHIFF);
+        return;
+    } else {
+        if ((df.str <= 0)) {
+            return;
+        } else {
+            let toBody = (act === K.BODY);
+            let dmg = baseDmg(act);
+            dmg = ((((dmg * ((80 + ((statPow(at.kind) * 15) | 0)) | 0)) | 0) / 100) | 0);
+            dmg = ((((dmg * ((60 + ((at.sta / 25) | 0)) | 0)) | 0) / 100) | 0);
+            dmg = ((((dmg * ((115 - ((statChin(df.kind) * 10) | 0)) | 0)) | 0) / 100) | 0);
+            let weakHit = ((toBody && (statWeak(df.kind) === 1)) || ((toBody ? 0 : 1) && (statWeak(df.kind) === 0)));
+            if (weakHit) {
+                dmg = ((((dmg * 3) | 0) / 2) | 0);
+            }
+            let counter = ((df.act !== K.IDLE) & (df.actT < windup(df.act)));
+            if (counter) {
+                dmg = ((((dmg * 5) | 0) / 4) | 0);
+            }
+            if (((df.inG && (df.act === K.IDLE)) && (df.stun === 0))) {
+                let _scopedVar$pass = 0;
+                if ((act === K.BODY)) {
+                    _scopedVar$pass = 25;
+                }
+                if ((act === K.HOOK)) {
+                    _scopedVar$pass = 30;
+                }
+                if ((act === K.PAYOFF)) {
+                    _scopedVar$pass = 50;
+                }
+                dmg = ((((dmg * _scopedVar$pass) | 0) / 100) | 0);
+                addPts(df, 1);
+                let _fldrecv11 = df;
+                let _fldval12 = imax(0, ((df.sta - 12) | 0));
+                (_fldrecv11.sta = _fldval12);
+                let _fldrecv13 = df;
+                let _fldval14 = clampi(((df.x + ((at.face * 3) | 0)) | 0), 70, 570);
+                (_fldrecv13.x = _fldval14);
+                sfx(g, K.S_BLOCK);
+                if ((!dmg)) {
+                    if ((df.human || at.human)) {
+                        say(g, "BLOQUEOU!");
+                    }
+                    return;
+                }
+            }
+            let _fldrecv15 = df;
+            let _fldval16 = ((df.str - dmg) | 0);
+            (_fldrecv15.str = _fldval16);
+            if ((act === K.JAB)) {
+                sfx(g, K.S_JAB);
+            }
+            if ((act === K.BODY)) {
+                sfx(g, K.S_BODY);
+            }
+            if ((act === K.HOOK)) {
+                sfx(g, K.S_HOOK);
+            }
+            if ((act === K.PAYOFF)) {
+                sfx(g, K.S_PAY);
+            }
+            let _fldrecv17 = df;
+            let _fldval18 = imax(0, ((df.sta - ((dmg / 3) | 0)) | 0));
+            (_fldrecv17.sta = _fldval18);
+            let _fldrecv19 = at;
+            let _fldval20 = imin(100, ((((at.meter + ((dmg / 7) | 0)) | 0) + 2) | 0));
+            (_fldrecv19.meter = _fldval20);
+            let _fldrecv21 = at;
+            let _fldval22 = ((at.landed + 1) | 0);
+            (_fldrecv21.landed = _fldval22);
+            addPts(at, punchPts(act));
+            let _fldrecv23 = df;
+            let _fldval24 = 3;
+            (_fldrecv23.flash = _fldval24);
+            let st = 5;
+            let push = 4;
+            if ((act === K.BODY)) {
+                st = 8;
+                push = 6;
+            }
+            if ((act === K.HOOK)) {
+                st = 12;
+                push = 10;
+            }
+            if ((act === K.PAYOFF)) {
+                st = 22;
+                push = 20;
+                let _fldrecv27 = g;
+                let _fldval28 = 10;
+                (_fldrecv27.shake = _fldval28);
+            }
+            let _fldrecv29 = df;
+            let _fldval30 = st;
+            (_fldrecv29.stun = _fldval30);
+            let _fldrecv31 = df;
+            let _fldval32 = K.IDLE;
+            (_fldrecv31.act = _fldval32);
+            let _fldrecv33 = df;
+            let _fldval34 = 0;
+            (_fldrecv33.actT = _fldval34);
+            let _fldrecv35 = df;
+            let _fldval36 = clampi(((df.x + ((at.face * push) | 0)) | 0), 70, 570);
+            (_fldrecv35.x = _fldval36);
+            if ((act === K.PAYOFF)) {
+                say(g, "PAYOFF!!");
+            } else {
+                if (counter) {
+                    say(g, "CONTRA-GOLPE!");
+                } else {
+                    if ((weakHit && (act !== K.JAB))) {
+                        say(g, "NO PONTO FRACO!");
+                    }
+                }
+            }
+            if ((df.str <= 0)) {
+                let _fldrecv37 = df;
+                let _fldval38 = 0;
+                (_fldrecv37.str = _fldval38);
+                knockdown(g, df);
+            }
+        }
     }
-    if (down && (!held && !0)) {
-      if (g.state === K.FIGHT) {
-        let _fldrecv11 = p, _fldval12 = act;
-        _fldrecv11.queue = _fldval12;
-      }
-      mash(g, p);
+    return;
+}
+
+function knockdown(g, p) {
+    let _fldrecv2 = p;
+    let _fldval3 = ((p.kd + 1) | 0);
+    (_fldrecv2.kd = _fldval3);
+    let _fldrecv4 = p;
+    let _fldval5 = ((p.kdTotal + 1) | 0);
+    (_fldrecv4.kdTotal = _fldval5);
+    let _fldrecv6 = p;
+    let _fldval7 = 0;
+    (_fldrecv6.rise = _fldval7);
+    let _fldrecv8 = p;
+    let _fldval9 = false;
+    (_fldrecv8.inG = _fldval9);
+    let _fldrecv10 = g;
+    let _fldval11 = K.DOWN;
+    (_fldrecv10.state = _fldval11);
+    let _fldrecv12 = g;
+    let _fldval13 = 0;
+    (_fldrecv12.t = _fldval13);
+    let _fldrecv14 = g;
+    let _fldval15 = 0;
+    (_fldrecv14.count = _fldval15);
+    let _fldrecv16 = g;
+    let _fldval17 = 8;
+    (_fldrecv16.shake = _fldval17);
+    sfx(g, K.S_DOWN);
+    if ((p === g.a)) {
+        let _fldrecv18 = g;
+        let _fldval19 = 1;
+        (_fldrecv18.downWho = _fldval19);
+    } else {
+        let _fldrecv20 = g;
+        let _fldval21 = 2;
+        (_fldrecv20.downWho = _fldval21);
     }
-  }
-  function releaseAll(p) {
-    let _fldrecv1 = p, _fldval2 = !1;
-    _fldrecv1.inL = _fldval2;
-    let _fldrecv3 = p, _fldval4 = !1;
-    _fldrecv3.inR = _fldval4;
-    let _fldrecv5 = p, _fldval6 = !1;
-    _fldrecv5.inU = _fldval6;
-    let _fldrecv7 = p, _fldval8 = !1;
-    _fldrecv7.inD = _fldval8;
-    let _fldrecv9 = p, _fldval10 = !1;
-    _fldrecv9.inG = _fldval10;
-  }
-  function main() {
-    let __kof_t0, __kof_t1, __kof_t2, __kof_t3, __kof_t4, __kof_t5, __kof_t6, __kof_t7, __kof_t8, __kof_t9, __kof_t10, __kof_t11, __kof_t12, __kof_t13, __kof_t14, __kof_t15, __kof_t16, __kof_t17, __kof_t18, __kof_t19, __kof_t20, g = new Game(), _fldrecv2 = g, _fldval3 = 0;
-    _fldrecv2.sel1 = _fldval3;
-    let _fldrecv4 = g, _fldval5 = 1;
-    _fldrecv4.sel2 = _fldval5;
+    if ((p.kd >= 3)) {
+        let _scopedVar$w = 2;
+        if ((g.downWho === 2)) {
+            _scopedVar$w = 1;
+        }
+        endFight(g, _scopedVar$w, "NOCAUTE TECNICO");
+        return;
+    } else {
+        say(g, "QUEDA!");
+        let o = g.b;
+        if ((g.downWho === 2)) {
+            o = g.a;
+        }
+        let _fldrecv24 = o;
+        let _fldval25 = K.IDLE;
+        (_fldrecv24.act = _fldval25);
+        let _fldrecv26 = o;
+        let _fldval27 = 0;
+        (_fldrecv26.actT = _fldval27);
+        let _fldrecv28 = o;
+        let _fldval29 = false;
+        (_fldrecv28.inG = _fldval29);
+    }
+    return;
+}
+
+function updateBoxer(g, p, o) {
+    if ((p.flash > 0)) {
+        let _fldrecv3 = p;
+        let _fldval4 = ((p.flash - 1) | 0);
+        (_fldrecv3.flash = _fldval4);
+    }
+    if (((p.act === K.IDLE) & (p.stun === 0))) {
+        if ((o.x > p.x)) {
+            let _fldrecv5 = p;
+            let _fldval6 = 1;
+            (_fldrecv5.face = _fldval6);
+        } else {
+            let _fldrecv7 = p;
+            let _fldval8 = -1;
+            (_fldrecv7.face = _fldval8);
+        }
+    }
+    if ((p.stun > 0)) {
+        let _fldrecv9 = p;
+        let _fldval10 = ((p.stun - 1) | 0);
+        (_fldrecv9.stun = _fldval10);
+        let _fldrecv11 = p;
+        let _fldval12 = 0;
+        (_fldrecv11.walk = _fldval12);
+        return;
+    } else {
+        if ((p.act !== K.IDLE)) {
+            let _fldrecv13 = p;
+            let _fldval14 = ((p.actT + 1) | 0);
+            (_fldrecv13.actT = _fldval14);
+            if (((p.resolved ? 0 : 1) && (p.actT === windup(p.act)))) {
+                let _fldrecv15 = p;
+                let _fldval16 = true;
+                (_fldrecv15.resolved = _fldval16);
+                resolveHit(g, p, o);
+                if ((g.state !== K.FIGHT)) {
+                    return;
+                }
+            }
+            let _scopedVar$extra = 0;
+            if ((p.sta < 300)) {
+                _scopedVar$extra = 5;
+            }
+            if ((p.actT >= ((actLen(p.act) + _scopedVar$extra) | 0))) {
+                let _fldrecv18 = p;
+                let _fldval19 = K.IDLE;
+                (_fldrecv18.act = _fldval19);
+                let _fldrecv20 = p;
+                let _fldval21 = 0;
+                (_fldrecv20.actT = _fldval21);
+            }
+            return;
+        } else {
+            tryPunch(g, p);
+            if ((p.act !== K.IDLE)) {
+                return;
+            } else {
+                let sp = ((2 + statSpd(p.kind)) | 0);
+                if ((p.sta < 300)) {
+                    sp = ((sp - 1) | 0);
+                }
+                if (p.inG) {
+                    sp = imax(1, ((sp / 2) | 0));
+                }
+                let mx = 0;
+                let mz = 0;
+                if (p.inL) {
+                    mx = ((mx - sp) | 0);
+                }
+                if (p.inR) {
+                    mx = ((mx + sp) | 0);
+                }
+                if (p.inU) {
+                    mz = ((mz - imax(1, ((sp - 1) | 0))) | 0);
+                }
+                if (p.inD) {
+                    mz = ((mz + imax(1, ((sp - 1) | 0))) | 0);
+                }
+                let nx = clampi(((p.x + mx) | 0), 70, 570);
+                let nz = clampi(((p.z + mz) | 0), 0, 100);
+                if ((((iabs(((nz - o.z) | 0)) < 16) & (iabs(((nx - o.x) | 0)) < 44)) & (iabs(((nx - o.x) | 0)) < iabs(((p.x - o.x) | 0))))) {
+                    nx = p.x;
+                }
+                if (((nx !== p.x) | (nz !== p.z))) {
+                    let _fldrecv27 = p;
+                    let _fldval28 = ((p.walk + 1) | 0);
+                    (_fldrecv27.walk = _fldval28);
+                    let _fldrecv29 = p;
+                    let _fldval30 = imax(0, ((p.sta - 1) | 0));
+                    (_fldrecv29.sta = _fldval30);
+                } else {
+                    let _fldrecv31 = p;
+                    let _fldval32 = 0;
+                    (_fldrecv31.walk = _fldval32);
+                }
+                let _fldrecv33 = p;
+                let _fldval34 = nx;
+                (_fldrecv33.x = _fldval34);
+                let _fldrecv35 = p;
+                let _fldval36 = nz;
+                (_fldrecv35.z = _fldval36);
+                if (p.inG) {
+                    let _fldrecv37 = p;
+                    let _fldval38 = imax(0, ((p.sta - 1) | 0));
+                    (_fldrecv37.sta = _fldval38);
+                } else {
+                    if (((mx === 0) & (mz === 0))) {
+                        let _fldrecv39 = p;
+                        let _fldval40 = imin(1000, ((p.sta + 4) | 0));
+                        (_fldrecv39.sta = _fldval40);
+                    } else {
+                        let _fldrecv41 = p;
+                        let _fldval42 = imin(1000, ((p.sta + 1) | 0));
+                        (_fldrecv41.sta = _fldval42);
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+function think(g, p, o) {
+    if ((p.aiT > 0)) {
+        let _fldrecv3 = p;
+        let _fldval4 = ((p.aiT - 1) | 0);
+        (_fldrecv3.aiT = _fldval4);
+        return;
+    } else {
+        let _fldrecv5 = p;
+        let _fldval6 = ((10 - ((g.diff * 3) | 0)) | 0);
+        (_fldrecv5.aiT = _fldval6);
+        let _fldrecv7 = p;
+        let _fldval8 = false;
+        (_fldrecv7.inL = _fldval8);
+        let _fldrecv9 = p;
+        let _fldval10 = false;
+        (_fldrecv9.inR = _fldval10);
+        let _fldrecv11 = p;
+        let _fldval12 = false;
+        (_fldrecv11.inU = _fldval12);
+        let _fldrecv13 = p;
+        let _fldval14 = false;
+        (_fldrecv13.inD = _fldval14);
+        let _fldrecv15 = p;
+        let _fldval16 = false;
+        (_fldrecv15.inG = _fldval16);
+        let dx = ((o.x - p.x) | 0);
+        let adx = iabs(dx);
+        let dz = ((o.z - p.z) | 0);
+        let toward = 1;
+        if ((dx < 0)) {
+            toward = -1;
+        }
+        if ((((p.sta < 220) & (adx < 110)) & (rnd(g, 100) < 70))) {
+            if ((toward > 0)) {
+                let _fldrecv21 = p;
+                let _fldval22 = true;
+                (_fldrecv21.inL = _fldval22);
+            } else {
+                let _fldrecv23 = p;
+                let _fldval24 = true;
+                (_fldrecv23.inR = _fldval24);
+            }
+            if ((dz >= 0)) {
+                let _fldrecv25 = p;
+                let _fldval26 = true;
+                (_fldrecv25.inU = _fldval26);
+            } else {
+                let _fldrecv27 = p;
+                let _fldval28 = true;
+                (_fldrecv27.inD = _fldval28);
+            }
+            return;
+        } else {
+            let danger = ((((o.act !== K.IDLE) & (o.actT < windup(o.act))) & (adx < 90)) & (iabs(dz) < 18));
+            if ((danger && (rnd(g, 100) < ((15 + ((g.diff * 22) | 0)) | 0)))) {
+                let _fldrecv30 = p;
+                let _fldval31 = true;
+                (_fldrecv30.inG = _fldval31);
+                return;
+            } else {
+                if ((dz > 5)) {
+                    let _fldrecv32 = p;
+                    let _fldval33 = true;
+                    (_fldrecv32.inD = _fldval33);
+                }
+                if ((dz < -5)) {
+                    let _fldrecv34 = p;
+                    let _fldval35 = true;
+                    (_fldrecv34.inU = _fldval35);
+                }
+                if ((adx > 60)) {
+                    if ((toward > 0)) {
+                        let _fldrecv36 = p;
+                        let _fldval37 = true;
+                        (_fldrecv36.inR = _fldval37);
+                    } else {
+                        let _fldrecv38 = p;
+                        let _fldval39 = true;
+                        (_fldrecv38.inL = _fldval39);
+                    }
+                } else {
+                    if ((adx < 46)) {
+                        if ((toward > 0)) {
+                            let _fldrecv40 = p;
+                            let _fldval41 = true;
+                            (_fldrecv40.inL = _fldval41);
+                        } else {
+                            let _fldrecv42 = p;
+                            let _fldval43 = true;
+                            (_fldrecv42.inR = _fldval43);
+                        }
+                    }
+                }
+                if (((((adx <= 66) & (iabs(dz) <= 12)) & (p.act === K.IDLE)) & (p.stun === 0))) {
+                    if ((rnd(g, 100) < ((10 + ((g.diff * 16) | 0)) | 0))) {
+                        if ((p.meter >= 100)) {
+                            let _fldrecv44 = p;
+                            let _fldval45 = K.HOOK;
+                            (_fldrecv44.queue = _fldval45);
+                        } else {
+                            let _scopedVar$r = rnd(g, 100);
+                            if ((statWeak(o.kind) === 1)) {
+                                if ((_scopedVar$r < 45)) {
+                                    let _fldrecv47 = p;
+                                    let _fldval48 = K.BODY;
+                                    (_fldrecv47.queue = _fldval48);
+                                } else {
+                                    if ((_scopedVar$r < 82)) {
+                                        let _fldrecv49 = p;
+                                        let _fldval50 = K.JAB;
+                                        (_fldrecv49.queue = _fldval50);
+                                    } else {
+                                        let _fldrecv51 = p;
+                                        let _fldval52 = K.HOOK;
+                                        (_fldrecv51.queue = _fldval52);
+                                    }
+                                }
+                            } else {
+                                if ((_scopedVar$r < 45)) {
+                                    let _fldrecv53 = p;
+                                    let _fldval54 = K.JAB;
+                                    (_fldrecv53.queue = _fldval54);
+                                } else {
+                                    if ((_scopedVar$r < 75)) {
+                                        let _fldrecv55 = p;
+                                        let _fldval56 = K.HOOK;
+                                        (_fldrecv55.queue = _fldval56);
+                                    } else {
+                                        let _fldrecv57 = p;
+                                        let _fldval58 = K.BODY;
+                                        (_fldrecv57.queue = _fldval58);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if ((rnd(g, 100) < 12)) {
+                            let _fldrecv59 = p;
+                            let _fldval60 = true;
+                            (_fldrecv59.inG = _fldval60);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+function tick(g) {
+    let _fldrecv1 = g;
+    let _fldval2 = ((g.frame + 1) | 0);
+    (_fldrecv1.frame = _fldval2);
+    let _fldrecv3 = g;
+    let _fldval4 = ((g.t + 1) | 0);
+    (_fldrecv3.t = _fldval4);
+    if ((g.msgT > 0)) {
+        let _fldrecv5 = g;
+        let _fldval6 = ((g.msgT - 1) | 0);
+        (_fldrecv5.msgT = _fldval6);
+    }
+    if ((g.shake > 0)) {
+        let _fldrecv7 = g;
+        let _fldval8 = ((g.shake - 1) | 0);
+        (_fldrecv7.shake = _fldval8);
+    }
+    if ((g.state === K.INTRO)) {
+        if ((g.t >= 70)) {
+            sfx(g, K.S_BELL);
+            let _fldrecv9 = g;
+            let _fldval10 = K.FIGHT;
+            (_fldrecv9.state = _fldval10);
+            let _fldrecv11 = g;
+            let _fldval12 = 0;
+            (_fldrecv11.t = _fldval12);
+        }
+    } else {
+        if ((g.state === K.FIGHT)) {
+            if ((g.b.human ? 0 : 1)) {
+                think(g, g.b, g.a);
+            }
+            updateBoxer(g, g.a, g.b);
+            if ((g.state === K.FIGHT)) {
+                updateBoxer(g, g.b, g.a);
+            }
+            if ((g.state === K.FIGHT)) {
+                let _fldrecv13 = g;
+                let _fldval14 = ((g.clock - 1) | 0);
+                (_fldrecv13.clock = _fldval14);
+                if ((g.clock <= 0)) {
+                    let _fldrecv15 = g;
+                    let _fldval16 = 0;
+                    (_fldrecv15.clock = _fldval16);
+                    if ((g.round >= g.rounds)) {
+                        decision(g);
+                    } else {
+                        let _fldrecv17 = g;
+                        let _fldval18 = K.REST;
+                        (_fldrecv17.state = _fldval18);
+                        let _fldrecv19 = g;
+                        let _fldval20 = 0;
+                        (_fldrecv19.t = _fldval20);
+                        sfx(g, K.S_BELL);
+                        say(g, "GONGO!");
+                    }
+                }
+            }
+        } else {
+            if ((g.state === K.DOWN)) {
+                let _scopedVar$p = g.a;
+                if ((g.downWho === 2)) {
+                    _scopedVar$p = g.b;
+                }
+                let _scopedVar$gain = ((((((1 + statChin(_scopedVar$p.kind)) | 0) * ((_scopedVar$p.sta + 200) | 0)) | 0) / 600) | 0);
+                if (_scopedVar$p.human) {
+                    _scopedVar$gain = imax(1, ((_scopedVar$gain / 2) | 0));
+                } else {
+                    _scopedVar$gain = ((imax(2, _scopedVar$gain) + rnd(g, 2)) | 0);
+                }
+                let _fldrecv23 = _scopedVar$p;
+                let _fldval24 = ((_scopedVar$p.rise + _scopedVar$gain) | 0);
+                (_fldrecv23.rise = _fldval24);
+                let _scopedVar$need = ((((150 + ((((1000 - _scopedVar$p.sta) | 0) / 4) | 0)) | 0) + ((_scopedVar$p.kdTotal * 80) | 0)) | 0);
+                if ((!(g.t % 24))) {
+                    let _fldrecv26 = g;
+                    let _fldval27 = ((g.count + 1) | 0);
+                    (_fldrecv26.count = _fldval27);
+                    if ((g.count < 10)) {
+                        sfx(g, K.S_COUNT);
+                    }
+                    if ((g.count >= 10)) {
+                        let _scopedVar$w = 2;
+                        if ((g.downWho === 2)) {
+                            _scopedVar$w = 1;
+                        }
+                        endFight(g, _scopedVar$w, "NOCAUTE!");
+                        return;
+                    }
+                }
+                if (((g.t > 30) & (_scopedVar$p.rise >= _scopedVar$need))) {
+                    let _fldrecv29 = _scopedVar$p;
+                    let _fldval30 = ((150 + ((_scopedVar$p.sta / 4) | 0)) | 0);
+                    (_fldrecv29.str = _fldval30);
+                    let _fldrecv31 = _scopedVar$p;
+                    let _fldval32 = imin(1000, ((_scopedVar$p.sta + 100) | 0));
+                    (_fldrecv31.sta = _fldval32);
+                    let _fldrecv33 = _scopedVar$p;
+                    let _fldval34 = 15;
+                    (_fldrecv33.stun = _fldval34);
+                    let _fldrecv35 = g;
+                    let _fldval36 = K.FIGHT;
+                    (_fldrecv35.state = _fldval36);
+                    let _fldrecv37 = g;
+                    let _fldval38 = 0;
+                    (_fldrecv37.t = _fldval38);
+                    say(g, "LEVANTOU! LUTA!");
+                    sfx(g, K.S_RISE);
+                    if ((g.a.x < g.b.x)) {
+                        let _fldrecv39 = g.a;
+                        let _fldval40 = clampi(((g.a.x - 50) | 0), 70, 570);
+                        (_fldrecv39.x = _fldval40);
+                        let _fldrecv41 = g.b;
+                        let _fldval42 = clampi(((g.b.x + 50) | 0), 70, 570);
+                        (_fldrecv41.x = _fldval42);
+                    } else {
+                        let _fldrecv43 = g.a;
+                        let _fldval44 = clampi(((g.a.x + 50) | 0), 70, 570);
+                        (_fldrecv43.x = _fldval44);
+                        let _fldrecv45 = g.b;
+                        let _fldval46 = clampi(((g.b.x - 50) | 0), 70, 570);
+                        (_fldrecv45.x = _fldval46);
+                    }
+                }
+            } else {
+                if ((g.state === K.REST)) {
+                    if ((g.t === 1)) {
+                        let _fldrecv47 = g.a;
+                        let _fldval48 = imin(1000, ((imax(g.a.str, 1) + 250) | 0));
+                        (_fldrecv47.str = _fldval48);
+                        let _fldrecv49 = g.b;
+                        let _fldval50 = imin(1000, ((imax(g.b.str, 1) + 250) | 0));
+                        (_fldrecv49.str = _fldval50);
+                        let _fldrecv51 = g.a;
+                        let _fldval52 = imin(1000, ((g.a.sta + 450) | 0));
+                        (_fldrecv51.sta = _fldval52);
+                        let _fldrecv53 = g.b;
+                        let _fldval54 = imin(1000, ((g.b.sta + 450) | 0));
+                        (_fldrecv53.sta = _fldval54);
+                    }
+                    if ((g.t >= 120)) {
+                        let _fldrecv55 = g;
+                        let _fldval56 = ((g.round + 1) | 0);
+                        (_fldrecv55.round = _fldval56);
+                        startRound(g);
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+function confirm(g) {
+    if ((g.state === K.MENU)) {
+        startFight(g);
+    } else {
+        if ((g.state === K.OVER)) {
+            let _fldrecv1 = g;
+            let _fldval2 = K.MENU;
+            (_fldrecv1.state = _fldval2);
+            let _fldrecv3 = g;
+            let _fldval4 = 0;
+            (_fldrecv3.t = _fldval4);
+        }
+    }
+    return;
+}
+
+function mash(g, p) {
+    if ((g.state === K.DOWN)) {
+        let _scopedVar$dn = g.a;
+        if ((g.downWho === 2)) {
+            _scopedVar$dn = g.b;
+        }
+        if (((_scopedVar$dn === p) && p.human)) {
+            let _fldrecv3 = p;
+            let _fldval4 = ((p.rise + 9) | 0);
+            (_fldrecv3.rise = _fldval4);
+        }
+    }
+    return;
+}
+
+function onKey(g, raw, down) {
+    let k = raw.toLowerCase();
+    if ((down && ((k === "enter") ? 1 : 0))) {
+        confirm(g);
+        return;
+    } else {
+        if ((down && ((k === "p") ? 1 : 0))) {
+            if ((g.state === K.FIGHT)) {
+                let _fldrecv4 = g;
+                let _fldval5 = g.state;
+                (_fldrecv4.prevState = _fldval5);
+                let _fldrecv6 = g;
+                let _fldval7 = K.PAUSE;
+                (_fldrecv6.state = _fldval7);
+            } else {
+                if ((g.state === K.PAUSE)) {
+                    let _fldrecv8 = g;
+                    let _fldval9 = g.prevState;
+                    (_fldrecv8.state = _fldval9);
+                }
+            }
+            return;
+        } else {
+            if ((down && ((k === "n") ? 1 : 0))) {
+                let _fldrecv10 = g.sfx;
+                let _fldval11 = (g.sfx.on ? 0 : 1);
+                (_fldrecv10.on = _fldval11);
+                sfx(g, K.S_BLIP);
+                return;
+            } else {
+                let a = g.a;
+                let b = g.b;
+                let solo = (g.mode === 1);
+                if ((((k === "a") ? 1 : 0) || (solo && ((k === "arrowleft") ? 1 : 0)))) {
+                    let _fldrecv15 = a;
+                    let _fldval16 = down;
+                    (_fldrecv15.inL = _fldval16);
+                }
+                if ((((k === "d") ? 1 : 0) || (solo && ((k === "arrowright") ? 1 : 0)))) {
+                    let _fldrecv17 = a;
+                    let _fldval18 = down;
+                    (_fldrecv17.inR = _fldval18);
+                }
+                if ((((k === "w") ? 1 : 0) || (solo && ((k === "arrowup") ? 1 : 0)))) {
+                    let _fldrecv19 = a;
+                    let _fldval20 = down;
+                    (_fldrecv19.inU = _fldval20);
+                }
+                if ((((k === "s") ? 1 : 0) || (solo && ((k === "arrowdown") ? 1 : 0)))) {
+                    let _fldrecv21 = a;
+                    let _fldval22 = down;
+                    (_fldrecv21.inD = _fldval22);
+                }
+                if ((((k === "r") ? 1 : 0) || (solo && ((k === "i") ? 1 : 0)))) {
+                    let _fldrecv23 = a;
+                    let _fldval24 = down;
+                    (_fldrecv23.inG = _fldval24);
+                }
+                if ((((k === "f") ? 1 : 0) || (solo && ((k === "j") ? 1 : 0)))) {
+                    press(g, a, K.JAB, down);
+                }
+                if ((((k === "g") ? 1 : 0) || (solo && ((k === "k") ? 1 : 0)))) {
+                    press(g, a, K.BODY, down);
+                }
+                if ((((k === "h") ? 1 : 0) || (solo && ((k === "l") ? 1 : 0)))) {
+                    press(g, a, K.HOOK, down);
+                }
+                if (solo) {
+                    return;
+                } else {
+                    if (((k === "arrowleft") ? 1 : 0)) {
+                        let _fldrecv25 = b;
+                        let _fldval26 = down;
+                        (_fldrecv25.inL = _fldval26);
+                    }
+                    if (((k === "arrowright") ? 1 : 0)) {
+                        let _fldrecv27 = b;
+                        let _fldval28 = down;
+                        (_fldrecv27.inR = _fldval28);
+                    }
+                    if (((k === "arrowup") ? 1 : 0)) {
+                        let _fldrecv29 = b;
+                        let _fldval30 = down;
+                        (_fldrecv29.inU = _fldval30);
+                    }
+                    if (((k === "arrowdown") ? 1 : 0)) {
+                        let _fldrecv31 = b;
+                        let _fldval32 = down;
+                        (_fldrecv31.inD = _fldval32);
+                    }
+                    if ((((k === "0") ? 1 : 0) || ((k === "m") ? 1 : 0))) {
+                        let _fldrecv33 = b;
+                        let _fldval34 = down;
+                        (_fldrecv33.inG = _fldval34);
+                    }
+                    if ((((k === "1") ? 1 : 0) || ((k === ",") ? 1 : 0))) {
+                        press(g, b, K.JAB, down);
+                    }
+                    if ((((k === "2") ? 1 : 0) || ((k === ".") ? 1 : 0))) {
+                        press(g, b, K.BODY, down);
+                    }
+                    if ((((k === "3") ? 1 : 0) || ((k === "/") ? 1 : 0))) {
+                        press(g, b, K.HOOK, down);
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+function press(g, p, act, down) {
+    let held = false;
+    if ((act === K.JAB)) {
+        held = p.hJ;
+        let _fldrecv5 = p;
+        let _fldval6 = down;
+        (_fldrecv5.hJ = _fldval6);
+    }
+    if ((act === K.BODY)) {
+        held = p.hB;
+        let _fldrecv7 = p;
+        let _fldval8 = down;
+        (_fldrecv7.hB = _fldval8);
+    }
+    if ((act === K.HOOK)) {
+        held = p.hH;
+        let _fldrecv9 = p;
+        let _fldval10 = down;
+        (_fldrecv9.hH = _fldval10);
+    }
+    if ((down && (held ? 0 : 1))) {
+        if ((g.state === K.FIGHT)) {
+            let _fldrecv11 = p;
+            let _fldval12 = act;
+            (_fldrecv11.queue = _fldval12);
+        }
+        mash(g, p);
+    }
+    return;
+}
+
+function releaseAll(p) {
+    let _fldrecv1 = p;
+    let _fldval2 = false;
+    (_fldrecv1.inL = _fldval2);
+    let _fldrecv3 = p;
+    let _fldval4 = false;
+    (_fldrecv3.inR = _fldval4);
+    let _fldrecv5 = p;
+    let _fldval6 = false;
+    (_fldrecv5.inU = _fldval6);
+    let _fldrecv7 = p;
+    let _fldval8 = false;
+    (_fldrecv7.inD = _fldval8);
+    let _fldrecv9 = p;
+    let _fldval10 = false;
+    (_fldrecv9.inG = _fldval10);
+    return;
+}
+
+function main() {
+    let __kof_t0;
+    let __kof_t1;
+    let __kof_t2;
+    let __kof_t3;
+    let __kof_t4;
+    let __kof_t5;
+    let __kof_t6;
+    let __kof_t7;
+    let __kof_t8;
+    let __kof_t9;
+    let __kof_t10;
+    let __kof_t11;
+    let __kof_t12;
+    let __kof_t13;
+    let __kof_t14;
+    let __kof_t15;
+    let __kof_t16;
+    let __kof_t17;
+    let __kof_t18;
+    let __kof_t19;
+    let __kof_t20;
+    let g = new Game();
+    let _fldrecv2 = g;
+    let _fldval3 = 0;
+    (_fldrecv2.sel1 = _fldval3);
+    let _fldrecv4 = g;
+    let _fldval5 = 1;
+    (_fldrecv4.sel2 = _fldval5);
     let c = kofUiCanvasNew(K.W, K.H);
     buildSounds(g.sfx);
-    let ch1 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP)), ch2 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP)), ch3 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP)), w = kofUiWindowNew("Ringue KOF 87");
+    let ch1 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP));
+    let ch2 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP));
+    let ch3 = kofUiAudioNew(kofListGet(g.sfx.uris, K.S_BLIP));
+    let w = kofUiWindowNew("Ringue KOF 87");
     kofUiWindowSetTitle(w, "Ringue KOF 87 - homenagem a RealSports Boxing");
-    let bP1 = kofUiButtonNewAction("Lutador P1 >", new Lambda0(g)), bP2 = kofUiButtonNewAction("Lutador CPU/P2 >", new Lambda1(g)), bMode = kofUiButtonNewAction("1P / 2P", new Lambda2(g)), bRounds = kofUiButtonNewAction("3 / 7 rounds", new Lambda3(g)), bDiff = kofUiButtonNewAction("Dificuldade", new Lambda4(g)), bGo = kofUiButtonNewAction(">> LUTAR! (ativa o teclado) <<", new Lambda5(g)), bSom = kofUiButtonNewAction("Som (N)", new Lambda6(g)), bMenu = kofUiButtonNewAction("Menu", new Lambda7(g));
-    __kof_t0 = kofListNew(), kofListAdd(__kof_t0, bP1), __kof_t1 = __kof_t0, kofListAdd(__kof_t1, bP2), __kof_t2 = __kof_t1, kofListAdd(__kof_t2, bMode), __kof_t3 = __kof_t2, kofListAdd(__kof_t3, bRounds), __kof_t4 = __kof_t3, kofListAdd(__kof_t4, bDiff), __kof_t5 = __kof_t4, kofListAdd(__kof_t5, bSom), __kof_t6 = __kof_t5, kofListAdd(__kof_t6, bGo), __kof_t7 = __kof_t6, kofListAdd(__kof_t7, bMenu);
-    let menuRow = kofUiRowNew(__kof_t7), tL = kofUiButtonNewAction("<", new Lambda8()), tU = kofUiButtonNewAction("^", new Lambda9()), tD = kofUiButtonNewAction("v", new Lambda10()), tR = kofUiButtonNewAction(">", new Lambda11()), tJ = kofUiButtonNewAction("JAB", new Lambda12()), tB = kofUiButtonNewAction("CORPO", new Lambda13()), tH = kofUiButtonNewAction("GANCHO", new Lambda14()), tG = kofUiButtonNewAction("GUARDA", new Lambda15());
-    kofUiWidgetOn(tL, "pointerdown", new Lambda16(g)), kofUiWidgetOn(tL, "pointerup", new Lambda17(g)), kofUiWidgetOn(tL, "pointerleave", new Lambda18(g)), kofUiWidgetOn(tR, "pointerdown", new Lambda19(g)), kofUiWidgetOn(tR, "pointerup", new Lambda20(g)), kofUiWidgetOn(tR, "pointerleave", new Lambda21(g)), kofUiWidgetOn(tU, "pointerdown", new Lambda22(g)), kofUiWidgetOn(tU, "pointerup", new Lambda23(g)), kofUiWidgetOn(tU, "pointerleave", new Lambda24(g)), kofUiWidgetOn(tD, "pointerdown", new Lambda25(g)), kofUiWidgetOn(tD, "pointerup", new Lambda26(g)), kofUiWidgetOn(tD, "pointerleave", new Lambda27(g)), kofUiWidgetOn(tG, "pointerdown", new Lambda28(g)), kofUiWidgetOn(tG, "pointerup", new Lambda29(g)), kofUiWidgetOn(tG, "pointerleave", new Lambda30(g)), kofUiWidgetOn(tJ, "pointerdown", new Lambda31(g)), kofUiWidgetOn(tB, "pointerdown", new Lambda32(g)), kofUiWidgetOn(tH, "pointerdown", new Lambda33(g)), __kof_t8 = kofListNew(), kofListAdd(__kof_t8, tL), __kof_t9 = __kof_t8, kofListAdd(__kof_t9, tU), __kof_t10 = __kof_t9, kofListAdd(__kof_t10, tD), __kof_t11 = __kof_t10, kofListAdd(__kof_t11, tR), __kof_t12 = __kof_t11, kofListAdd(__kof_t12, tJ), __kof_t13 = __kof_t12, kofListAdd(__kof_t13, tB), __kof_t14 = __kof_t13, kofListAdd(__kof_t14, tH), __kof_t15 = __kof_t14, kofListAdd(__kof_t15, tG);
-    let padRow = kofUiRowNew(__kof_t15), hint = kofUiLabelNew("Clique em LUTAR! (ou em qualquer botao) para ativar o teclado: WASD + F/G/H + R.  Modo 1P tambem aceita setas + J/K/L + I.  2P: setas + 1/2/3 + 0.  Enter = lutar, P = pausa, N = som."), repo = kofUiLinkNew("Codigo-fonte no GitHub: github.com/PublioSantos/ringue-kof-87", "https://github.com/PublioSantos/ringue-kof-87");
-    __kof_t16 = kofListNew(), kofListAdd(__kof_t16, c), __kof_t17 = __kof_t16, kofListAdd(__kof_t17, menuRow), __kof_t18 = __kof_t17, kofListAdd(__kof_t18, padRow), __kof_t19 = __kof_t18, kofListAdd(__kof_t19, repo), __kof_t20 = __kof_t19, kofListAdd(__kof_t20, hint);
+    let bP1 = kofUiButtonNewAction("Lutador P1 >", new Lambda0(g));
+    let bP2 = kofUiButtonNewAction("Lutador CPU/P2 >", new Lambda1(g));
+    let bMode = kofUiButtonNewAction("1P / 2P", new Lambda2(g));
+    let bRounds = kofUiButtonNewAction("3 / 7 rounds", new Lambda3(g));
+    let bDiff = kofUiButtonNewAction("Dificuldade", new Lambda4(g));
+    let bGo = kofUiButtonNewAction(">> LUTAR! (ativa o teclado) <<", new Lambda5(g));
+    let bSom = kofUiButtonNewAction("Som (N)", new Lambda6(g));
+    let bMenu = kofUiButtonNewAction("Menu", new Lambda7(g));
+    (__kof_t0 = kofListNew());
+    kofListAdd(__kof_t0, bP1);
+    (__kof_t1 = __kof_t0);
+    kofListAdd(__kof_t1, bP2);
+    (__kof_t2 = __kof_t1);
+    kofListAdd(__kof_t2, bMode);
+    (__kof_t3 = __kof_t2);
+    kofListAdd(__kof_t3, bRounds);
+    (__kof_t4 = __kof_t3);
+    kofListAdd(__kof_t4, bDiff);
+    (__kof_t5 = __kof_t4);
+    kofListAdd(__kof_t5, bSom);
+    (__kof_t6 = __kof_t5);
+    kofListAdd(__kof_t6, bGo);
+    (__kof_t7 = __kof_t6);
+    kofListAdd(__kof_t7, bMenu);
+    let menuRow = kofUiRowNew(__kof_t7);
+    let tL = kofUiButtonNewAction("<", new Lambda8());
+    let tU = kofUiButtonNewAction("^", new Lambda9());
+    let tD = kofUiButtonNewAction("v", new Lambda10());
+    let tR = kofUiButtonNewAction(">", new Lambda11());
+    let tJ = kofUiButtonNewAction("JAB", new Lambda12());
+    let tB = kofUiButtonNewAction("CORPO", new Lambda13());
+    let tH = kofUiButtonNewAction("GANCHO", new Lambda14());
+    let tG = kofUiButtonNewAction("GUARDA", new Lambda15());
+    kofUiWidgetOn(tL, "pointerdown", new Lambda16(g));
+    kofUiWidgetOn(tL, "pointerup", new Lambda17(g));
+    kofUiWidgetOn(tL, "pointerleave", new Lambda18(g));
+    kofUiWidgetOn(tR, "pointerdown", new Lambda19(g));
+    kofUiWidgetOn(tR, "pointerup", new Lambda20(g));
+    kofUiWidgetOn(tR, "pointerleave", new Lambda21(g));
+    kofUiWidgetOn(tU, "pointerdown", new Lambda22(g));
+    kofUiWidgetOn(tU, "pointerup", new Lambda23(g));
+    kofUiWidgetOn(tU, "pointerleave", new Lambda24(g));
+    kofUiWidgetOn(tD, "pointerdown", new Lambda25(g));
+    kofUiWidgetOn(tD, "pointerup", new Lambda26(g));
+    kofUiWidgetOn(tD, "pointerleave", new Lambda27(g));
+    kofUiWidgetOn(tG, "pointerdown", new Lambda28(g));
+    kofUiWidgetOn(tG, "pointerup", new Lambda29(g));
+    kofUiWidgetOn(tG, "pointerleave", new Lambda30(g));
+    kofUiWidgetOn(tJ, "pointerdown", new Lambda31(g));
+    kofUiWidgetOn(tB, "pointerdown", new Lambda32(g));
+    kofUiWidgetOn(tH, "pointerdown", new Lambda33(g));
+    (__kof_t8 = kofListNew());
+    kofListAdd(__kof_t8, tL);
+    (__kof_t9 = __kof_t8);
+    kofListAdd(__kof_t9, tU);
+    (__kof_t10 = __kof_t9);
+    kofListAdd(__kof_t10, tD);
+    (__kof_t11 = __kof_t10);
+    kofListAdd(__kof_t11, tR);
+    (__kof_t12 = __kof_t11);
+    kofListAdd(__kof_t12, tJ);
+    (__kof_t13 = __kof_t12);
+    kofListAdd(__kof_t13, tB);
+    (__kof_t14 = __kof_t13);
+    kofListAdd(__kof_t14, tH);
+    (__kof_t15 = __kof_t14);
+    kofListAdd(__kof_t15, tG);
+    let padRow = kofUiRowNew(__kof_t15);
+    let hint = kofUiLabelNew("Clique em LUTAR! (ou em qualquer botao) para ativar o teclado: WASD + F/G/H + R.  Modo 1P tambem aceita setas + J/K/L + I.  2P: setas + 1/2/3 + 0.  Enter = lutar, P = pausa, N = som.");
+    let repo = kofUiLinkNew("Codigo-fonte no GitHub: github.com/PublioSantos/ringue-kof-87", "https://github.com/PublioSantos/ringue-kof-87");
+    (__kof_t16 = kofListNew());
+    kofListAdd(__kof_t16, c);
+    (__kof_t17 = __kof_t16);
+    kofListAdd(__kof_t17, menuRow);
+    (__kof_t18 = __kof_t17);
+    kofListAdd(__kof_t18, padRow);
+    (__kof_t19 = __kof_t18);
+    kofListAdd(__kof_t19, repo);
+    (__kof_t20 = __kof_t19);
+    kofListAdd(__kof_t20, hint);
     let root = kofUiColumnNew(__kof_t20);
-    kofUiWidgetOn(root, "keydown", new Lambda34(g)), kofUiWidgetOn(root, "keyup", new Lambda35(g)), kofUiWidgetOn(root, "blur", new Lambda36(g)), kofUiWindowBind(w, root), kofTimeInterval(33, new Lambda37(g, c, ch1, ch2, ch3)), kofPrintln("Ringue KOF 87 pronto. Powered by Kof."), kofUiWindowShow(w);
-  }
-  main();
-})();
+    kofUiWidgetOn(root, "keydown", new Lambda34(g));
+    kofUiWidgetOn(root, "keyup", new Lambda35(g));
+    kofUiWidgetOn(root, "blur", new Lambda36(g));
+    kofUiWindowBind(w, root);
+    kofTimeInterval(33, new Lambda37(g, c, ch1, ch2, ch3));
+    kofPrintln(String("Ringue KOF 87 pronto. Powered by Kof."));
+    kofUiWindowShow(w);
+    return;
+}
+
+main();
+
 
 </script>
 </body>

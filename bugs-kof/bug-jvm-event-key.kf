@@ -1,0 +1,11 @@
+mostrar(String s) {
+    println("tecla: " + s)
+}
+
+main() {
+    var b = Button("x", () -> {})
+    b.on("keydown", (e: Event) -> { mostrar(e.key()) })
+    var w = Window("t")
+    w.bind(b)
+    w.show()
+}
