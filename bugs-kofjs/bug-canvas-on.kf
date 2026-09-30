@@ -1,0 +1,9 @@
+main() {
+    var c = Canvas(10, 10)
+    var l = Label("oi")
+    c.on("pointerdown", (e: Event) -> { println("x") })
+    var root = Column(listOf(c, l))
+    var w = Window("t")
+    w.bind(root)
+    w.show()
+}
