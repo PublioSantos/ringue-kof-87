@@ -5,7 +5,7 @@ https://github.com/PublioSantos/ringue-kof-87
 Homenagem em **Kof** ao jogo de luta mais complexo do Atari 2600:
 **RealSports Boxing** (Atari Corp., 1987, programado por Alex DeMeo).
 
-Todo o jogo é Kof: lógica, IA, física do ringue, placar e até a fonte
+Todo o jogo é Kof: lógica, ringue, placar e até a fonte
 em pixels (3x5), desenhada pelo próprio programa num `Canvas` do `kof.ui`.
 Sprites, nomes e arte são originais, inspirados no espírito do cartucho.
 
