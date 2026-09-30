@@ -1,5 +1,5 @@
 // ============================================================================
-//  EMPACOTADOR do Ringue KOF 87 — 100% Kof (sem python, sem node)
+//  EMPACOTADOR do Ringue KOF 87 — 100% Kof
 //
 //  1. compila ringue.kf para JS (kof build ... --target js --output web)
 //  2. ajusta o titulo da pagina

@@ -9,7 +9,11 @@ Todo o jogo é Kof: lógica, IA, física do ringue, placar e até a fonte
 em pixels (3x5), desenhada pelo próprio programa num `Canvas` do `kof.ui`.
 Sprites, nomes e arte são originais, inspirados no espírito do cartucho.
 
-## Como rodar (só Kof, sem python)
+![Luta no Ringue KOF 87](docs/luta.png)
+
+![Menu do Ringue KOF 87](docs/menu.png)
+
+## Como rodar
 
 O jeito mais simples: abra **`ringue-kof-87.html`** no navegador.
 É o jogo inteiro num arquivo só, funciona offline, sem servidor.
@@ -24,7 +28,6 @@ kof run ferramentas/empacotar.kf      # recompila e gera web/ + ringue-kof-87.ht
 O empacotador também é escrito em Kof (`ferramentas/empacotar.kf`): ele chama
 o `kof build`, ajusta a página e junta o runtime e o jogo num único
 `<script type="module">`, usando só `kof.io` e `kof.process`.
-Não precisa de python, node nem esbuild.
 
 Compilado com o Kof4j `main` (commit `317d9f6`).
 
