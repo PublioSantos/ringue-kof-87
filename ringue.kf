@@ -540,6 +540,99 @@ drawFrontRopes(Canvas c) {
     rect(c, 18, 334, 604, 3, Color(235, 235, 235))
 }
 
+// ---------------------------------------------------------------- rosto (olhos)
+// vista da cabeca: 0 = de lado (perfil), 1 = de frente, 2 = de costas
+Int faceView(Game g, Boxer p, Bool isWinner) {
+    if (isWinner) { return 1 }
+    if (g.state == K.INTRO && g.t < 45) { return 1 }
+    if (p.act != K.IDLE || p.stun > 0) { return 0 }
+    var o = g.a
+    if (p == g.a) { o = g.b }
+    if (p.inD && !p.inL && !p.inR) { return 1 }
+    if (p.inU && !p.inL && !p.inR) { return 2 }
+    if (iabs(o.x - p.x) < 26) {
+        if (o.z > p.z) { return 1 }
+        return 2
+    }
+    return 0
+}
+
+Color darker(Color col) {
+    return Color(col.red() * 3 / 4, col.green() * 3 / 4, col.blue() * 3 / 4)
+}
+
+// olho fechado em X (2x2 por ponto)
+eyeX(Canvas c, Int ex, Int ey) {
+    var ink = Color(20, 20, 30)
+    rect(c, ex - 2, ey - 2, 2, 2, ink)
+    rect(c, ex + 2, ey - 2, 2, 2, ink)
+    rect(c, ex, ey, 2, 2, ink)
+    rect(c, ex - 2, ey + 2, 2, 2, ink)
+    rect(c, ex + 2, ey + 2, 2, 2, ink)
+}
+
+// um olho: branco + pupila deslocada para onde ele olha (dir = -1, 0, 1)
+eye(Canvas c, Int x, Int y, Int dir, Bool shut) {
+    var ink = Color(20, 20, 30)
+    if (shut) {
+        rect(c, x, y + 2, 5, 1, ink)
+        return
+    }
+    rect(c, x, y, 5, 4, Color(245, 245, 245))
+    rect(c, x + 1 + dir, y + 1, 3, 3, ink)
+}
+
+drawFace(Canvas c, Game g, Boxer p, Int hx, Int hy, Int view, Bool isWinner) {
+    var k = p.kind
+    var f = p.face
+    var skin = skinColor(k)
+    var hair = hairColor(k)
+    var shade = darker(skin)
+    var mouth = Color(150, 40, 45)
+    // pisca de vez em quando; atordoado fica de olho apertado
+    var shut = p.stun > 0 || (g.frame + k * 37) % 97 < 3
+    if (view == 2) {
+        // de costas: nuca coberta de cabelo + orelhas
+        rect(c, hx - 12, hy - 3, 24, 20, hair)
+        rect(c, hx - 13, hy + 8, 2, 5, shade)
+        rect(c, hx + 11, hy + 8, 2, 5, shade)
+        return
+    }
+    rect(c, hx - 12, hy - 3, 24, 8, hair)
+    if (view == 1) {
+        // de frente: dois olhos, sobrancelhas, nariz e boca
+        rect(c, hx - 8, hy + 6, 5, 2, hair)
+        rect(c, hx + 3, hy + 6, 5, 2, hair)
+        eye(c, hx - 8, hy + 8, 0, shut)
+        eye(c, hx + 3, hy + 8, 0, shut)
+        rect(c, hx - 1, hy + 12, 2, 3, shade)
+        if (isWinner) {
+            rect(c, hx - 4, hy + 17, 8, 2, mouth)
+            rect(c, hx - 6, hy + 15, 2, 2, mouth)
+            rect(c, hx + 4, hy + 15, 2, 2, mouth)
+        } else {
+            rect(c, hx - 3, hy + 16, 6, 2, mouth)
+        }
+        rect(c, hx - 13, hy + 8, 2, 5, shade)
+        rect(c, hx + 11, hy + 8, 2, 5, shade)
+        return
+    }
+    // de lado: um olho virado para o adversario, nariz para fora do rosto
+    var ex = hx + 2
+    if (f < 0) { ex = hx - 7 }
+    rect(c, ex, hy + 6, 6, 2, hair)
+    eye(c, ex, hy + 8, f, shut)
+    if (f > 0) {
+        rect(c, hx + 11, hy + 10, 3, 4, skin)
+        rect(c, hx + 5, hy + 16, 4, 2, mouth)
+        rect(c, hx - 6, hy + 8, 3, 6, shade)
+    } else {
+        rect(c, hx - 14, hy + 10, 3, 4, skin)
+        rect(c, hx - 9, hy + 16, 4, 2, mouth)
+        rect(c, hx + 3, hy + 8, 3, 6, shade)
+    }
+}
+
 // ---------------------------------------------------------------- boxeador (sprite)
 drawBoxer(Canvas c, Game g, Boxer p, Bool isWinner) {
     var k = p.kind
@@ -562,6 +655,9 @@ drawBoxer(Canvas c, Game g, Boxer p, Bool isWinner) {
         rect(c, fx - 8, fy - 18, 22, 16, trunk)
         rect(c, fx + d * 40 - 10, fy - 20, 20, 18, skin)
         rect(c, fx + d * 40 - 10, fy - 22, 20, 6, hair)
+        // olhos em X (nocaute)
+        eyeX(c, fx + d * 40 - 5, fy - 11)
+        eyeX(c, fx + d * 40 + 4, fy - 11)
         rect(c, fx - d * 52 - 8, fy - 12, 16, 10, shoe)
         rect(c, fx + d * 20 - 7, fy - 28, 14, 12, glove)
         rect(c, fx - 7, fy - 26, 14, 12, glove)
@@ -595,11 +691,10 @@ drawBoxer(Canvas c, Game g, Boxer p, Bool isWinner) {
     var hx = tx + lean
     var hy = fy - 110 + bob
     rect(c, hx - 11, hy, 22, 22, skin)
-    rect(c, hx - 12, hy - 3, 24, 8, hair)
-    rect(c, hx + f * 5 - 2, hy + 9, 4, 4, Color(20, 20, 20))
     if (p.flash > 0) {
         rect(c, hx - 11, hy, 22, 22, Color(255, 255, 255))
     }
+    drawFace(c, g, p, hx, hy, faceView(g, p, isWinner), isWinner)
 
     // luvas
     var frontX = tx + f * 20
@@ -761,6 +856,10 @@ menuCard(Canvas c, Int k, Int cx, Int y) {
     // mini-lutador
     rect(c, cx + 60, y + 36, 16, 16, skinColor(k))
     rect(c, cx + 59, y + 33, 18, 6, hairColor(k))
+    rect(c, cx + 62, y + 41, 4, 3, Color(245, 245, 245))
+    rect(c, cx + 70, y + 41, 4, 3, Color(245, 245, 245))
+    rect(c, cx + 63, y + 42, 2, 2, Color(20, 20, 30))
+    rect(c, cx + 71, y + 42, 2, 2, Color(20, 20, 30))
     rect(c, cx + 56, y + 52, 24, 16, skinColor(k))
     rect(c, cx + 56, y + 66, 24, 10, trunkColor(k))
     rect(c, cx + 78, y + 50, 10, 9, gloveColor(k))

@@ -36,9 +36,9 @@ Compilado com o Kof4j `main` (commit `317d9f6`).
 
 | Arquivo | Linhas | Código (sem brancas e comentários) |
 |---|---:|---:|
-| `ringue.kf` (o jogo) | 1.474 | 1.282 |
+| `ringue.kf` (o jogo) | 1.573 | 1.367 |
 | `ferramentas/empacotar.kf` (empacotador) | 97 | 78 |
-| **Total** | **1.571** | **1.360** |
+| **Total** | **1.670** | **1.445** |
 
 Tudo o que o jogo faz está nessas linhas: regras, IA, desenho, fonte em
 pixels, síntese de som e codificação dos WAVs em base64.
