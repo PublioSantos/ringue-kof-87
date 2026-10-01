@@ -7,7 +7,7 @@ Homenagem em **Kof** ao jogo de luta mais complexo do Atari 2600:
 
 Todo o jogo é Kof: lógica, ringue, placar e até a fonte
 em pixels (3x5), desenhada pelo próprio programa num `Canvas` do `kof.ui`.
-Sprites, nomes e arte são originais, inspirados no espírito do cartucho.
+Sprites, nomes e arte são inspirados no espírito do cartucho.
 
 ![Luta no Ringue KOF 87](docs/luta.png)
 
