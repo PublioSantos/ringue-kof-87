@@ -1,9 +1,0 @@
-main() {
-    var b = Button("x", () -> {})
-    b.setStyle(Style("background: #f5c542"))
-    var l = Label("oi")
-    var root = Column(listOf(b, l))
-    var w = Window("t")
-    w.bind(root)
-    w.show()
-}

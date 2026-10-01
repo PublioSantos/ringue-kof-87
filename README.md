@@ -78,19 +78,21 @@ Liga/desliga: botão **Som** ou tecla **N**.
 
 ## Bugs do compilador encontrados
 
-Durante o desenvolvimento apareceram três bugs no compilador Kof; os repros estão em `bugs-kof/`:
+Durante o desenvolvimento apareceram dois bugs reais no compilador Kof
+(conferidos contra o código atual do Kof4j, `main` em `317d9f6`); os repros
+estão em `bugs-kof/` e as correções foram enviadas ao projeto:
 
-1. **`bug-setstyle.kf`**: `widget.setStyle(Style("..."))` é descartado no JS gerado
-   (vira a expressão morta `(b, ...)`), e uma declaração seguinte é reordenada
-   para depois do uso: a página quebra com `ReferenceError: Cannot access 'l'
-   before initialization`. O `kof check` passa sem erros.
-2. **`bug-canvas-on.kf`**: `canvas.on("pointerdown", ...)` é descartado sem
-   aviso (em `Button` o mesmo `.on` funciona).
-3. **`bug-jvm-event-key.kf`**: no alvo JVM (e no `kof serve`), passar `e.key()`
-   de um handler de evento para uma função que recebe `String` gera
+1. **`bug-canvas-on.kf`**: `canvas.on("pointerdown", ...)` compila sem erro
+   (o `kof check` passa), mas a chamada some do código gerado. O mesmo vale
+   para qualquer método inexistente em widgets de `kof.ui`.
+2. **`bug-jvm-event-key.kf`**: no alvo JVM (e no `kof serve`), passar `e.key()`
+   de um handler `(e: Event)` para uma função que recebe `String` gera
    `java.lang.VerifyError` ao iniciar. No alvo JS funciona.
 
-O jogo contorna os dois primeiros (não usa `setStyle` nem eventos no canvas) e roda no alvo JS.
+O jogo contorna os dois: não usa eventos no canvas e roda no alvo JS.
+
+Um terceiro suspeito, `widget.setStyle(Style("..."))` sumindo do JS gerado,
+era só um `kof.jar` desatualizado: no código atual do Kof ele funciona.
 
 ## Créditos
 
