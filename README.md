@@ -9,7 +9,11 @@ Todo o jogo é Kof: lógica, ringue, placar e até a fonte
 em pixels (3x5), desenhada pelo próprio programa num `Canvas` do `kof.ui`.
 Sprites, nomes e arte são inspirados no espírito do cartucho.
 
-![Luta no Ringue KOF 87](docs/luta.png)
+![Luta no Ringue KOF 87: os dois lutadores de lado trocando golpes](docs/luta.png)
+
+| Apresentação do round | Nocaute e contagem do juiz |
+|---|---|
+| ![Os dois lutadores de frente na apresentação do round](docs/apresentacao.png) | ![Lutador nocauteado, com olhos em X, e o juiz contando](docs/nocaute.png) |
 
 ![Menu do Ringue KOF 87](docs/menu.png)
 
@@ -67,6 +71,19 @@ Enter = lutar / nova luta · P = pausa · N = som · botões na tela para mouse/
 - **Guarda, contra-golpe** (acertar quem está armando) e golpe no **ponto fraco**.
 - **Rounds de 1 minuto** (3 ou 7), intervalo no corner e decisão por pontos.
 - **CPU em 3 níveis** (fácil, normal, campeão) e modo **2 jogadores** no mesmo teclado.
+
+## Visual dos lutadores
+
+Os boxeadores são desenhados em pixels pelo próprio programa, e o rosto
+muda conforme a posição de cada um no ringue:
+
+- **De lado** (na troca de golpes): um olho, com a pupila virada para o
+  adversário, nariz, boca e orelha.
+- **De frente** (na apresentação do round, andando para a câmera ou com o
+  adversário à frente): dois olhos, sobrancelhas, nariz e boca; o vencedor sorri.
+- **De costas** (andando para o fundo do ringue): só a nuca, com cabelo.
+- Eles **piscam** de vez em quando, **apertam os olhos** quando levam um
+  golpe e ficam com **olhos em X** no nocaute.
 
 ## Som
 
