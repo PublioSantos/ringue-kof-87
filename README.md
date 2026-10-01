@@ -15,9 +15,7 @@ Sprites, nomes e arte são inspirados no espírito do cartucho.
 
 ## Como rodar
 
-**Jogue online:** https://publiosantos.github.io/ringue-kof-87/
-
-Ou baixe **`ringue-kof-87.html`** (botão *Download raw file* na página do
+Baixe **`ringue-kof-87.html`** (botão *Download raw file* na página do
 arquivo) e abra no navegador: é o jogo inteiro num arquivo só, funciona
 offline, sem servidor.
 
